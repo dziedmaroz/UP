@@ -23,15 +23,15 @@ enum Blocks {A,B,C,D};
  */
 
 
-public class Matrix
+class MatrixBase
 {
-        private double [] [] matrix_;       
+    private double [] [] matrix_;       
     /**
      * Конструктор матрицы из массива вещественных чисел. Если размеры оригинальной
      * матрицы не являются степенью двойки, матрица дозаполняется нулями.
      * @param matrix
      */
-    public Matrix(double[][] matrix) throws MatrixWrongDimentionsExcpetion
+    public MatrixBase(double[][] matrix) throws MatrixWrongDimentionsExcpetion
     {
         if (matrix.length==0) throw new MatrixWrongDimentionsExcpetion("Matrix say's: very funny, it's just nothing");
         if (matrix.length != matrix[0].length) throw new MatrixWrongDimentionsExcpetion("Matrix say's: we are accept square matrixes only");
@@ -47,7 +47,7 @@ public class Matrix
      * Конструктор копирования.
      * @param obj
      */
-    public Matrix (Matrix obj)
+    public MatrixBase (MatrixBase obj)
     {
 
             this.matrix_ = new double [obj.matrix_.length] [obj.matrix_.length];
@@ -62,9 +62,9 @@ public class Matrix
      * @param matr
      * @return
      */
-    public Matrix sum (Matrix matr)
+    public MatrixBase sum (MatrixBase matr)
     {
-        Matrix res = new Matrix(matr);
+        MatrixBase res = new MatrixBase(matr);
         if (this.matrix_.length == matr.matrix_.length && this.matrix_[0].length== matr.matrix_[0].length)
         {
             for (int i=0;i<matrix_.length;i++)
@@ -89,7 +89,7 @@ public class Matrix
     * @param block
     * @return
     */
-    private Matrix getBlock (Blocks block)
+    private MatrixBase getBlock (Blocks block)
     {
         int rStart = 0;
         int rFin = 0;
@@ -138,15 +138,27 @@ public class Matrix
                 tmp[i-rStart][j-cStart] = this.matrix_[i][j];
             }
         }
-        Matrix res = null;
+        MatrixBase res = null;
         try
         {
-            res = new Matrix(tmp);
+            res = new MatrixBase(tmp);
         }
         catch (MatrixWrongDimentionsExcpetion e)
         {
             throw new UnsupportedOperationException(e);
         }
         return res;
+    }
+    public MatrixBase neg ()
+    {
+        MatrixBase tmp = new MatrixBase (this);
+        for (int i=0;i<tmp.matrix_.length;i++)
+        {
+            for (int j=0;j<tmp.matrix_.length;j++)
+            {
+                tmp.matrix_[i][j]*=-1;
+            }
+        }
+        return tmp;
     }
 }
