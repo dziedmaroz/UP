@@ -1,6 +1,5 @@
 package mulmatrix;
 
-import java.util.concurrent.CyclicBarrier;
 import java.util.Arrays;
 /**
  *
@@ -26,8 +25,7 @@ enum Blocks {A,B,C,D};
 
 public class Matrix
 {
-        private double [] [] matrix_;
-        private CyclicBarrier barrier_;
+        private double [] [] matrix_;       
     /**
      * Конструктор матрицы из массива вещественных чисел. Если размеры оригинальной
      * матрицы не являются степенью двойки, матрица дозаполняется нулями.
@@ -43,24 +41,20 @@ public class Matrix
         {
             System.arraycopy(matrix[i], 0, matrix_[i], 0, matrix.length);
         }
-        barrier_ = null;
+
     }
     /**
-     * Конструктор копирования. Проверяет выполняются ли над оригиналом какие-
-     * нибудь действия. Если что бросает UnsupportedOperationException
+     * Конструктор копирования.
      * @param obj
      */
     public Matrix (Matrix obj)
     {
-        if (obj.barrier_.getNumberWaiting()==0)
-        {
-            this.matrix_ = Arrays.copyOf(obj.matrix_, matrix_.length);
-            barrier_ = null;
-        }
-        else
-        {
-            throw new  UnsupportedOperationException ("Some actions pending...");
-        }
+
+            this.matrix_ = new double [obj.matrix_.length] [obj.matrix_.length];
+            for (int i=0;i<obj.matrix_.length;i++)
+            {
+                this.matrix_[i]= Arrays.copyOf(obj.matrix_[i],obj.matrix_.length);
+            }
     }
 
     /**
@@ -97,6 +91,62 @@ public class Matrix
     */
     private Matrix getBlock (Blocks block)
     {
-        throw new UnsupportedOperationException ("Not supported yet");
+        int rStart = 0;
+        int rFin = 0;
+        int cStart = 0;
+        int cFin = 0;
+        switch (block)
+        {
+            case A:
+                {
+                    rStart = 0;
+                    cStart = 0;
+                    rFin = this.matrix_.length/2;
+                    cFin = this.matrix_.length/2;
+                    break;
+                }
+            case B:
+                {
+                    rStart = 0;
+                    cStart = this.matrix_.length/2;
+                    rFin = this.matrix_.length/2;
+                    cFin = this.matrix_.length;
+                    break;
+                }
+            case C:
+                {
+                    rStart = this.matrix_.length/2;
+                    cStart = 0;
+                    rFin = this.matrix_.length;
+                    cFin = this.matrix_.length/2;
+                    break;
+                }
+            case D:
+                {
+                    rStart = this.matrix_.length/2;
+                    cStart = this.matrix_.length/2;
+                    rFin = this.matrix_.length;
+                    cFin = this.matrix_.length;
+                    break;
+                }
+        }
+        double[][] tmp = new double [this.matrix_.length/2] [this.matrix_.length/2];
+        for (int i = rStart;i<rFin;i++)
+        {
+            for (int j=cStart;j<cFin;j++)
+            {
+                tmp[i-rStart][j-cStart] = this.matrix_[i][j];
+            }
+        }
+        Matrix res = null;
+        try
+        {
+            res = new Matrix(tmp);
+        }
+        catch (MatrixWrongDimentionsExcpetion e)
+        {
+            throw new UnsupportedOperationException(e);
+        }
+        return res;
     }
 }
