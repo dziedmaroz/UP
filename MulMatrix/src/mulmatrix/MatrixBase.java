@@ -35,7 +35,7 @@ class MatrixBase
      */
     public MatrixBase(double[][] matrix) throws MatrixWrongDimentionsExcpetion
     {
-        if (matrix.length==0) throw new MatrixWrongDimentionsExcpetion("Matrix say's: very funny, it's just nothing");
+        if (matrix == null || matrix.length==0) throw new MatrixWrongDimentionsExcpetion("Matrix say's: very funny, it's just nothing");
         if (matrix.length != matrix[0].length) throw new MatrixWrongDimentionsExcpetion("Matrix say's: we are accept square matrixes only");
 
         matrix_ = new double [(int)Math.pow(2,Math.floor((Math.log(matrix.length)/Math.log(2)))+1)][(int)Math.pow(2,Math.floor((Math.log(matrix.length)/Math.log(2)))+1)];
@@ -78,9 +78,9 @@ class MatrixBase
      * Конструктор копирования.
      * @param obj
      */
-    public MatrixBase (MatrixBase obj)
+    public MatrixBase (MatrixBase obj) throws MatrixWrongDimentionsExcpetion
     {
-
+            if (obj == null) throw new MatrixWrongDimentionsExcpetion("Matrix say's: very funny, it's just nothing");
             this.matrix_ = new double [obj.matrix_.length] [obj.matrix_.length];
             for (int i=0;i<obj.matrix_.length;i++)
             {
@@ -93,7 +93,7 @@ class MatrixBase
      * @param matr
      * @return
      */
-    public MatrixBase sum (MatrixBase matr)
+    public MatrixBase sum (MatrixBase matr) throws MatrixWrongDimentionsExcpetion
     {
         MatrixBase res = new MatrixBase(matr);
         if (this.matrix_.length == matr.matrix_.length && this.matrix_[0].length== matr.matrix_[0].length)
@@ -180,7 +180,7 @@ class MatrixBase
         }
         return res;
     }
-    public MatrixBase neg ()
+    public MatrixBase neg () throws MatrixWrongDimentionsExcpetion
     {
         MatrixBase tmp = new MatrixBase (this);
         for (int i=0;i<tmp.matrix_.length;i++)

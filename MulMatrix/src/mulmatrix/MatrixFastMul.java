@@ -62,6 +62,8 @@ class MatrixFastMul extends RecursiveTask<MatrixBase>
                 P6 = new MatrixFastMul(A.getBlock(Blocks.C).sum(A.getBlock(Blocks.A).neg()), B.getBlock(Blocks.A).sum(B.getBlock(Blocks.B)));
                 //                                      (A21-A11)    *   (B21+B22)
                 P7 = new MatrixFastMul(A.getBlock(Blocks.C).sum(A.getBlock(Blocks.D).neg()), B.getBlock(Blocks.C).sum(B.getBlock(Blocks.D)));
+
+                
                 P2.fork();
                 P3.fork();
                 P4.fork();
