@@ -34,6 +34,15 @@ class MatrixFastMul extends RecursiveTask<MatrixBase>
             MatrixFastMul P6 = null;
             MatrixFastMul P7 = null;
 
+            MatrixBase P1res = null;
+            MatrixBase P2res = null;
+            MatrixBase P3res = null;
+            MatrixBase P4res = null;
+            MatrixBase P5res = null;
+            MatrixBase P6res = null;
+            MatrixBase P7res = null;
+
+
             try
             {
                 //                                   (A11 + A22)                                   *   (B11+B22)
@@ -50,6 +59,14 @@ class MatrixFastMul extends RecursiveTask<MatrixBase>
                 P6 = new MatrixFastMul(A.getBlock(Blocks.C).sum(A.getBlock(Blocks.A).neg()), B.getBlock(Blocks.A).sum(B.getBlock(Blocks.B)));
                 //                                      (A21-A11)    *   (B21+B22)
                 P7 = new MatrixFastMul(A.getBlock(Blocks.C).sum(A.getBlock(Blocks.D).neg()), B.getBlock(Blocks.C).sum(B.getBlock(Blocks.D)));
+                P2.fork();
+                P3.fork();
+                P4.fork();
+                P5.fork();
+                P6.fork();
+                P7.fork();
+
+
             } catch (MatrixWrongDimentionsExcpetion e)
             {
                 System.out.println(e);
@@ -58,15 +75,22 @@ class MatrixFastMul extends RecursiveTask<MatrixBase>
             MatrixBase C = null;
             try
             {
+                P1res = P1.compute();
+                P2res = P2.join();
+                P3res = P3.join();
+                P4res = P4.join();
+                P5res = P5.join();
+                P6res = P6.join();
+                P7res = P7.join();
                 C = new MatrixBase(
                         // P1 + P4 - P5 + P7
-                        P1.join().sum(P4.join().sum(P5.join().neg().sum(P7.join()))),
+                        P1res.sum(P4res.sum(P5res.neg().sum(P7res))),
                         // P3 + P5
-                        P3.join().sum(P5.join()),
+                        P3res.sum(P5res),
                         // P2 + P4
-                        P2.join().sum(P4.join()),
+                        P2res.sum(P4res),
                         // P1 - P2 + P3 + P6
-                        P1.join().sum(P2.join().neg().sum(P3.join().sum(P6.join()))));
+                        P1res.sum(P2res.neg().sum(P3res.sum(P6res))));
             } catch (MatrixWrongDimentionsExcpetion e)
             {
                 System.out.println(e);
