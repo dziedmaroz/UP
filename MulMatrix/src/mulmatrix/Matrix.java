@@ -13,6 +13,7 @@ public class Matrix
 {
     private double [] [] matrix_ ;
 
+
     public int rowCount()
     {
         return matrix_.length;
@@ -22,6 +23,22 @@ public class Matrix
     {
         return matrix_[0].length;
     }
+
+    public Matrix(double[][] matrix_)
+    {
+        this.matrix_ = matrix_;
+    }
+    private  Matrix (MatrixBase B)
+    {
+        this.matrix_ = B.toDouble();
+    }
+
+    public Matrix sum (Matrix B)
+    {
+
+       // return new Matrix(
+    }
+
 
 
 
