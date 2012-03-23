@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package mulmatrix;
 
 /**
@@ -11,8 +10,8 @@ package mulmatrix;
  */
 public class Matrix
 {
-    private double [] [] matrix_ ;
 
+    private double[][] matrix_;
 
     public int rowCount()
     {
@@ -28,18 +27,38 @@ public class Matrix
     {
         this.matrix_ = matrix_;
     }
-    private  Matrix (MatrixBase B)
+
+    private Matrix(MatrixBase B)
     {
         this.matrix_ = B.toDouble();
     }
 
-    public Matrix sum (Matrix B)
+    public Matrix sum(Matrix B)
     {
-
-       // return new Matrix(
+        throw new UnsupportedOperationException("Unsupported yet");
     }
 
+    public Matrix mul(Matrix X)
+    {
+        MatrixBase A = null;
+        MatrixBase B = null;
+        try
+        {
+            A = new MatrixBase(matrix_);
+            B = new MatrixBase(X.matrix_);
+        } catch (MatrixWrongDimentionsExcpetion e)
+        {
+            System.out.println(e);
+        }
+        MatrixFastMul C = null;
+        try
+        {
 
-
-
+            C = new MatrixFastMul(A, B);
+        } catch (MatrixWrongDimentionsExcpetion e)
+        {
+            System.out.println(e);
+        }
+        return new Matrix(C.compute().toDouble());
+    }
 }
