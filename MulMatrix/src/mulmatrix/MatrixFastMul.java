@@ -1,7 +1,10 @@
 package mulmatrix;
 
 import java.util.concurrent.*;
-
+class Globals
+{
+    static ForkJoinPool fjPool = new ForkJoinPool();
+}
 class MatrixFastMul extends RecursiveTask<MatrixBase>
 {
 
@@ -107,5 +110,10 @@ class MatrixFastMul extends RecursiveTask<MatrixBase>
         }
         this.A = A;
         this.B = B;
+    }
+
+    public MatrixBase mul () throws MatrixWrongDimentionsExcpetion
+    {
+        return Globals.fjPool.invoke(new MatrixFastMul(A, B));
     }
 }

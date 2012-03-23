@@ -38,7 +38,7 @@ public class Matrix
         throw new UnsupportedOperationException("Unsupported yet");
     }
 
-    public Matrix mul(Matrix X)
+    public Matrix mul(Matrix X) throws MatrixWrongDimentionsExcpetion
     {
         MatrixBase A = null;
         MatrixBase B = null;
@@ -59,6 +59,6 @@ public class Matrix
         {
             System.out.println(e);
         }
-        return new Matrix(C.compute().toDouble());
+        return new Matrix(C.mul().toDouble());
     }
 }
