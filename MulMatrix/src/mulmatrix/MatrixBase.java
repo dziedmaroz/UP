@@ -31,6 +31,7 @@ class MatrixBase
      * Конструктор матрицы из массива вещественных чисел. Если размеры оригинальной
      * матрицы не являются степенью двойки, матрица дозаполняется нулями.
      * @param matrix
+     * @throws  MatrixWrongDimentionsExcpetion - если матрица получается не квадратной
      */
     public MatrixBase(double[][] matrix) throws MatrixWrongDimentionsExcpetion
     {
@@ -43,6 +44,35 @@ class MatrixBase
             System.arraycopy(matrix[i], 0, matrix_[i], 0, matrix.length);
         }
 
+    }
+    /**
+     * Собирает матрицу из блоков. 
+     * @param A - левый верхний блок
+     * @param B - правый верхний блок
+     * @param C - левый нижний блок
+     * @param D - правый нижний блок
+     * @throws MatrixWrongDimentionsExcpetion - если размеры блоков разные
+     */
+    public MatrixBase(MatrixBase A, MatrixBase B, MatrixBase C, MatrixBase D) throws MatrixWrongDimentionsExcpetion
+    {
+        if (A.getSize() == B.getSize() && A.getSize() == C.getSize() && A.getSize() == D.getSize())
+        {
+            matrix_ = new double [A.getSize()+B.getSize()][A.getSize()+B.getSize()];
+            for (int i=0;i<A.getSize();i++)
+            {
+                for (int j=0;j<A.getSize();j++)
+                {
+                    matrix_[i][j] = A.matrix_[i][j];
+                    matrix_[A.getSize()+i][j]= C.matrix_[i][j];
+                    matrix_[i][j+A.getSize()] = B.matrix_[i][j];
+                    matrix_[A.getSize()+i][A.getSize()+j]=D.matrix_[i][j];
+                }
+            }
+        }
+        else
+        {
+            throw new MatrixWrongDimentionsExcpetion("MatrixBase say's: Sizes do not match. Bad-bad square");
+        }
     }
     /**
      * Конструктор копирования.

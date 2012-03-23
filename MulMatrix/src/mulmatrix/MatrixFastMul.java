@@ -1,30 +1,30 @@
 package mulmatrix;
+
 import java.util.concurrent.*;
 
- class MatrixFastMul extends RecursiveTask<MatrixBase>
+class MatrixFastMul extends RecursiveTask<MatrixBase>
 {
-  private MatrixBase A, B;
+
+    private MatrixBase A, B;
 
     @Override
-    protected MatrixBase compute()  
+    protected MatrixBase compute()
     {
-        if (A.getSize()==1 && B.getSize()==1)
+        if (A.getSize() == 1 && B.getSize() == 1)
         {
-            MatrixBase res=null;
+            MatrixBase res = null;
             try
             {
-             double [][] tmp = new double[1][1];
-             tmp[0][0] = A.toDouble()[0][0]*B.toDouble()[0][0];
-             res = new MatrixBase(tmp);
-            }
-            catch (MatrixWrongDimentionsExcpetion e)
+                double[][] tmp = new double[1][1];
+                tmp[0][0] = A.toDouble()[0][0] * B.toDouble()[0][0];
+                res = new MatrixBase(tmp);
+            } catch (MatrixWrongDimentionsExcpetion e)
             {
                 System.out.println(e);
                 System.out.println("MatrixFastMul: returning null!");
             }
             return res;
-        }
-        else
+        } else
         {
             //                                   (A11 + A22)                                   *   (B11+B22)
             MatrixFastMul P1 = new MatrixFastMul(A.getBlock(Blocks.A).sum(A.getBlock(Blocks.D)), B.getBlock(Blocks.A).sum(B.getBlock(Blocks.D)));
@@ -41,11 +41,24 @@ import java.util.concurrent.*;
             //                                      (A21-A11)    *   (B21+B22)
             MatrixFastMul P7 = new MatrixFastMul(A.getBlock(Blocks.C).sum(A.getBlock(Blocks.D).neg()), B.getBlock(Blocks.C).sum(B.getBlock(Blocks.D)));
 
-            
-
+            MatrixBase C = null;
+            try
+            {
+                C = new MatrixBase(
+                        // P1 + P4 - P5 + P7
+                        P1.join().sum(P4.join().sum(P5.join().neg().sum(P7.join()))),
+                        // P3 + P5
+                        P3.join().sum(P5.join()),
+                        // P2 + P4
+                        P2.join().sum(P4.join()),
+                        // P1 - P2 + P3 + P6
+                        P1.join().sum(P2.join().neg().sum(P3.join().sum(P6.join()))));
+            } catch (MatrixWrongDimentionsExcpetion e)
+            {
+                System.out.println(e);
+            }
+            return C;
         }
-
-        return null;
     }
 
     public MatrixFastMul(MatrixBase A, MatrixBase B)
@@ -53,8 +66,4 @@ import java.util.concurrent.*;
         this.A = A;
         this.B = B;
     }
-
-     
-  
-
 }
