@@ -17,13 +17,14 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        double [][] A = new double [16][16];
-        double [][] B = new double [16][16];
-        double [][] C = new double [16][16];
+        final int matrSize = 16;
+        double [][] A = new double [matrSize][matrSize];
+        double [][] B = new double [matrSize][matrSize];
+        double [][] C = new double [matrSize][matrSize];
 
-        for (int i=0;i<16;i++)
+        for (int i=0;i<matrSize;i++)
         {
-            for (int j=0;j<16;j++)
+            for (int j=0;j<matrSize;j++)
             {
                 if (i==j)
                 {
@@ -34,16 +35,27 @@ public class Main {
             }
             System.out.println();
         }
-        MulMatrix mul = new MulMatrix(A, B, C, 0, 0, 16);
-        mul.mul();
-        for (int i=0;i<16;i++)
+        Matrix matrA = new Matrix(A);
+        Matrix matrB = new Matrix(B);
+        Matrix matrC = null;
+        try
         {
-            for (int j=0;j<16;j++)
+            matrC = matrA.mul(matrB);
+            for (int i=0;i<matrSize;i++)
             {
-                System.out.printf("%8.2f", B[i][j]);
+                for (int j=0;j<matrSize;j++)
+                {
+                    System.out.printf("%8.2f", matrC.cell(i, j));
+                }
+                System.out.println();
             }
-            System.out.println();
         }
+        catch (MatrixWrongDimentionException e)
+        {
+            System.out.println(e);
+        }
+        
+       
     }
 
 }
