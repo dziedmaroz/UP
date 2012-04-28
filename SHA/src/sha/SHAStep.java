@@ -13,13 +13,14 @@ import java.util.Iterator;
  */
 public class SHAStep extends  SHABase implements Iterable<SHAStep>, Iterator<SHAStep>
 {
-    protected byte[] start;
-    protected byte[] end;
-    protected byte[] cur;
 
-    public SHAStep(String start, String end)
+   protected long end;
+    protected long current;
+
+    public SHAStep(long start, long end)
     {
-       
+        this.current = start-1;
+        this.end = end;
     }
 
     public Iterator<SHAStep> iterator()
@@ -29,12 +30,13 @@ public class SHAStep extends  SHABase implements Iterable<SHAStep>, Iterator<SHA
 
     public boolean hasNext()
     {
-      
+        return current<end;
     }
 
     public SHAStep next()
     {
-       
+       current++;
+       return this;
     }
 
     public void remove()
@@ -42,9 +44,16 @@ public class SHAStep extends  SHABase implements Iterable<SHAStep>, Iterator<SHA
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public byte[] getMsg ()
+    {
+        String msgStr = "";
+        long x = current;
+        while (x!=0)
+        {
+            msgStr+=ALLOWED_CHARS.charAt((int)((ALLOWED_CHARS.length()+x%ALLOWED_CHARS.length())-1)%ALLOWED_CHARS.length());
+            x/=ALLOWED_CHARS.length();
 
-
-    
-
-
+        }
+        return msgStr.getBytes();
+    }
 }
