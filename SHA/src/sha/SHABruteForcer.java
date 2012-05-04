@@ -71,6 +71,11 @@ public class SHABruteForcer extends SHABase implements  Iterable<SHAStep>, Itera
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public String getHash()
+    {
+        return hash;
+    }
+    
 
 
 }

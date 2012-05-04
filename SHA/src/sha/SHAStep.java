@@ -58,6 +58,6 @@ public class SHAStep extends SHABase implements Iterable<SHAStep>, Iterator<SHAS
 
     public byte[] getBytes()
     {
-        throw new UnsupportedOperationException("Unsupported yet");
+        return (Long.toString(current)+"\n"+Long.toString(end)+"\n").getBytes();
     }
 }

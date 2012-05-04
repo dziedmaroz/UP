@@ -56,6 +56,7 @@ public class BruteServer implements Runnable
     private CharBuffer charBuffer = CharBuffer.allocate(2048);
     private CharsetDecoder decoder = charset.newDecoder();
     Map<SelectionKey, ByteBuffer> connections = new HashMap<SelectionKey, ByteBuffer>();
+    private boolean succses = false;
 
     public BruteServer(int port,String hash) throws IOException
     {
@@ -127,9 +128,10 @@ public class BruteServer implements Runnable
                                         case SUCSESS:
                                         {
                                             System.out.println (post.getMessage());
+                                            succses = true;
                                             for (SelectionKey skey:selector.selectedKeys())
                                             {
-                                                closeChannel(skey);
+                                                skey.interestOps(SelectionKey.OP_WRITE);
                                             }
                                         }
                                     }
@@ -139,12 +141,20 @@ public class BruteServer implements Runnable
                         {
                             ByteBuffer byteBuffer = connections.get(key);
                             SocketChannel socketChannel = (SocketChannel) key.channel();
+                            if (succses)
+                            {
+                                byteBuffer.clear();
+                                byteBuffer.put("DIE\n".getBytes());
+                                socketChannel.write(byteBuffer);
+                            }
                             if (bruteForcer.hasNext())
                             {
                                 SHAStep step = bruteForcer.next();
                                 try
                                 {
                                     byteBuffer.clear();
+                                    byteBuffer.put(bruteForcer.getHash().getBytes());
+                                    byteBuffer.put("\n".getBytes());
                                     byteBuffer.put(step.getBytes());
                                     int result = socketChannel.write(byteBuffer);
                                     if (result == -1)
