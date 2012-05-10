@@ -1,6 +1,5 @@
 package server;
 
-import com.sun.org.apache.bcel.internal.generic.GETFIELD;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.util.*;
@@ -9,9 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
-import sha.SHABase;
 import sha.SHABruteForcer;
-import sun.misc.Regexp;
 
 /**
  *
@@ -29,7 +26,6 @@ public class BruteServer implements Runnable
 
     private static final String S_NEED_TASK = "100\n";
     private static final String S_SUCSESS = "200\n";
-    private static int AVG_CLI_COUNT = 10;
     private static final String CONFIG = "serverconfig.properties";
     // очередь хэшей для перебора
     Queue<SHABruteForcer> bruteforcerQueue = new PriorityQueue<SHABruteForcer>();
@@ -146,7 +142,10 @@ public class BruteServer implements Runnable
                             logger.addRecord("Writing to " + key.channel().toString() + "...", LogLevel.HIGH);
                             ByteBuffer byteBuffer = connections.get(key);
                             SocketChannel socketChannel = (SocketChannel) key.channel();
-                            socketChannel.write(byteBuffer);
+                            while (byteBuffer.hasRemaining()) 
+                            {
+                                socketChannel.write(byteBuffer);
+                            }
                             if (byteBuffer.limit() == byteBuffer.position())
                             {
                                 key.interestOps(SelectionKey.OP_READ);
@@ -168,6 +167,7 @@ public class BruteServer implements Runnable
     private Post decodeAndCheck(int read, ByteBuffer byteBuffer)
     {
         charBuffer.clear();
+
         decoder.decode(byteBuffer, charBuffer, false);
         charBuffer.flip();
         Status status = null;
@@ -179,22 +179,23 @@ public class BruteServer implements Runnable
             if (S_NEED_TASK.equals(charBuffer.toString().substring(0, 3)))
             {
                 status = Status.NEED_TASK;
-                logger.addRecord("Got " + Status.NEED_TASK + " request", logLevel);
+                logger.addRecord("Got " + Status.NEED_TASK + " request", logLevel.MEDIUM);
                 return new Post(status, message);
             }
             if (S_SUCSESS.equals(charBuffer.toString().substring(0, 3)))
             {
                 status = Status.SUCSESS;
                 message = charBuffer.toString().substring(4, charBuffer.toString().length());
-                logger.addRecord("Got " + Status.SUCSESS + " request", logLevel);
+                logger.addRecord("Got " + Status.SUCSESS + " request", logLevel.MEDIUM);
                 return new Post(status, message);
             }
 
 
-            if (charBuffer.toString().substring(0, charBuffer.toString().indexOf("\n")).toString().matches("GET .* HTTP/1.1\r"))
+            if (charBuffer.toString().substring(0, charBuffer.toString().indexOf("\n")).toString().matches("* HTTP/1.1\r"))
             {
-                status = Status.GET;
-                logger.addRecord("Got " + Status.GET + " request", logLevel);
+                status = Status.HTTP;
+                logger.addRecord("Got " + Status.HTTP + " request", logLevel.MEDIUM);
+                message = charBuffer.toString();
                 return new Post(status, message);
             }
 
@@ -255,15 +256,15 @@ public class BruteServer implements Runnable
         }
         switch (post.getStatus())
         {
-            case GET:
+            case HTTP:
             {
                 httpConnections.add(key);
                 ByteBuffer byteBuffer = connections.get(key);
                 byteBuffer.clear();
                 byteBuffer.position(0);
-                HTTPConnector sp = new HTTPConnector(connections.size() - httpConnections.size(), bruteforcerQueue.peek() == null ? 0 : bruteforcerQueue.peek().peekLastTask(), SHABase.TOTAL, bruteforcerQueue.peek() == null ? "" : bruteforcerQueue.peek().getHash(), post);
-                byteBuffer.limit(sp.getPage().length());
-                byteBuffer.put(sp.getPage().getBytes());
+                
+               // byteBuffer.limit(sp.getPage().length());
+               // byteBuffer.put(sp.getPage().getBytes());
                 byteBuffer.flip();
                 key.interestOps(SelectionKey.OP_WRITE);
                 // Выдать статистику
@@ -274,12 +275,7 @@ public class BruteServer implements Runnable
                 // Выдать таск
                 break;
             }
-            case POST:
-            {
-                // Добавить таск в очередь
-                // Обновить страничку
-                break;
-            }
+           
             case SUCSESS:
             {
                 // Вывести результат

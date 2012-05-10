@@ -12,5 +12,5 @@ package server;
  enum Status
 {
 
-    NEED_TASK, SUCSESS, GET, POST, NULL
+    NEED_TASK, SUCSESS,   NULL,HTTP
 };

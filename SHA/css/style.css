@@ -17,12 +17,12 @@ body
     padding:0;
 
     font-family: sans-serif;
-    background: #E6E6E6;
+    background: #fff;
 }
 
 #content
 {
-    background: #E6E6E6;
+    background: #fff;
     color:#333333;
     font-weight: bold;   
 }
@@ -46,37 +46,52 @@ body
 {    
     margin: 10px 0px 10px 0px; 
 }
-
-#tasks
+#task_header
 {
-    margin: 10px 0px 10px 0px;
-    padding: 5px;
+	margin:5px;
 }
 
-.active
+.task_entry ul
 {
-    background: #D0D102;
-    margin: 2px;
-    padding:4px;
-}
-.wait
-{
-    background: #FFE434;
-    margin: 2px;
-    padding:4px;
+list-style-type:none;
+margin:10px;
+padding:5px;
+background:#ccc;
+overflow:hidden;
 }
 
-.succses
+.stat ul
 {
-    background: #61AE24;
-    margin: 2px;
-    padding:4px;
+list-style-type:none;
+padding:5px; 
+overflow:hidden;
 }
 
-.fail
+.stat li
 {
-    background: #E54028;
-    margin: 2px;
-    padding:4px;
+	margin: 0px 10px;
+	width:auto;
+	background:#EDEAE3;
+	float:left;
+}
+
+.stat
+{
+	padding:0.4em 5em;	
+	width:100%;
+	background:#EDEAE3;
+	color:#34302D;
+} 
+
+.task_entry ul:hover
+{
+background:#eee;
+}
+
+.task_entry li
+{
+	margin: 0px 20px;
+	width:auto;
+	float:left;
 }
 
