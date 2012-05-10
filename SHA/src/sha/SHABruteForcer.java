@@ -75,7 +75,9 @@ public class SHABruteForcer extends SHABase implements  Iterable<SHAStep>, Itera
     {
         return hash;
     }
-    
 
-
+    public long peekLastTask ()
+    {
+        return lastTaskEnd;
+    }
 }

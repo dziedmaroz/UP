@@ -1,0 +1,82 @@
+/* 
+    Document   : style
+    Created on : 05.05.2012, 23:29:39
+    Author     : lucian
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+body
+{
+    margin:0;
+    padding:0;
+
+    font-family: sans-serif;
+    background: #E6E6E6;
+}
+
+#content
+{
+    background: #E6E6E6;
+    color:#333333;
+    font-weight: bold;   
+}
+
+#header
+{
+    background: #EDEAE3;
+    color:#34302D;
+    font-size: 4em;    
+    padding: 0.2em;
+    font-weight: bold;
+}
+
+#addHash
+{
+    margin: 3px auto;
+    width: 300px;
+}
+
+#container
+{    
+    margin: 10px 0px 10px 0px; 
+}
+
+#tasks
+{
+    margin: 10px 0px 10px 0px;
+    padding: 5px;
+}
+
+.active
+{
+    background: #D0D102;
+    margin: 2px;
+    padding:4px;
+}
+.wait
+{
+    background: #FFE434;
+    margin: 2px;
+    padding:4px;
+}
+
+.succses
+{
+    background: #61AE24;
+    margin: 2px;
+    padding:4px;
+}
+
+.fail
+{
+    background: #E54028;
+    margin: 2px;
+    padding:4px;
+}
+

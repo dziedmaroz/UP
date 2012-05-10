@@ -12,5 +12,6 @@ package sha;
 public class SHABase
 {
     protected final static String ALLOWED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    protected final int MAX_MSG_SIZE = 6;
+    protected final static int MAX_MSG_SIZE = 6;
+    public final static long TOTAL=(int) Math.pow((double) ALLOWED_CHARS.length(), (double)MAX_MSG_SIZE);
 }

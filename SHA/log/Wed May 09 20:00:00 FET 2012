@@ -1,0 +1,172 @@
+[Wed May 09 20:10:26 FET 2012] 
+
+			Starting server...
+[Wed May 09 20:10:26 FET 2012] Binding port 8080 on localhost...
+[Wed May 09 20:10:26 FET 2012] Waiting for connection
+[Wed May 09 20:10:31 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Wed May 09 20:10:31 FET 2012] Waiting for connection
+[Wed May 09 20:10:42 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44116]...
+[Wed May 09 20:10:42 FET 2012] GET / HTTP/1.1
+
+[Wed May 09 20:10:42 FET 2012] Got GET request
+[Wed May 09 20:10:42 FET 2012] Waiting for connection
+[Wed May 09 20:10:42 FET 2012] Writing to java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44116]...
+[Wed May 09 20:10:42 FET 2012] Waiting for connection
+[Wed May 09 20:10:44 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44116]...
+[Wed May 09 20:10:44 FET 2012] ]
+
+[Wed May 09 20:10:44 FET 2012] Waiting for connection
+[Wed May 09 20:13:38 FET 2012] 
+
+			Starting server...
+[Wed May 09 20:13:38 FET 2012] Binding port 8080 on localhost...
+[Wed May 09 20:13:38 FET 2012] Waiting for connection
+[Wed May 09 20:13:42 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Wed May 09 20:13:42 FET 2012] Waiting for connection
+[Wed May 09 20:13:48 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44135]...
+[Wed May 09 20:13:48 FET 2012] GET / HTTP/1.1
+
+[Wed May 09 20:13:48 FET 2012] Got GET request
+[Wed May 09 20:13:48 FET 2012] Waiting for connection
+[Wed May 09 20:13:48 FET 2012] Writing to java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44135]...
+[Wed May 09 20:13:48 FET 2012] Waiting for connection
+[Wed May 09 20:13:55 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Wed May 09 20:13:55 FET 2012] Waiting for connection
+[Wed May 09 20:13:55 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44138]...
+[Wed May 09 20:13:55 FET 2012] GET / HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+Cache-Control: max-age=0
+User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.79 Safari/535.11
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Encoding: gzip,deflate,sdch
+Accept-Language: en-US,en;q=0.8,be;q=0.6,ru;q=0.4
+Accept-Charset: windows-1251,utf-8;q=0.7,*;q=0.3
+
+
+[Wed May 09 20:13:55 FET 2012] Got GET request
+[Wed May 09 20:13:55 FET 2012] Waiting for connection
+[Wed May 09 20:13:55 FET 2012] Writing to java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44138]...
+[Wed May 09 20:13:55 FET 2012] Waiting for connection
+[Wed May 09 20:13:55 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44138]...
+[Wed May 09 20:13:55 FET 2012] Waiting for connection
+[Wed May 09 20:13:55 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Wed May 09 20:13:55 FET 2012] Waiting for connection
+[Wed May 09 20:13:55 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44139]...
+[Wed May 09 20:13:55 FET 2012] GET /favicon.ico HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+Accept: */*
+User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.79 Safari/535.11
+Accept-Encoding: gzip,deflate,sdch
+Accept-Language: en-US,en;q=0.8,be;q=0.6,ru;q=0.4
+Accept-Charset: windows-1251,utf-8;q=0.7,*;q=0.3
+
+
+[Wed May 09 20:13:55 FET 2012] Waiting for connection
+[Wed May 09 20:14:19 FET 2012] 
+
+			Starting server...
+[Wed May 09 20:14:19 FET 2012] Binding port 8080 on localhost...
+[Wed May 09 20:14:21 FET 2012] 
+
+			Starting server...
+[Wed May 09 20:14:21 FET 2012] Binding port 8080 on localhost...
+[Wed May 09 20:14:26 FET 2012] 
+
+			Starting server...
+[Wed May 09 20:14:26 FET 2012] Binding port 8080 on localhost...
+[Wed May 09 20:14:26 FET 2012] Waiting for connection
+[Wed May 09 20:14:27 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Wed May 09 20:14:27 FET 2012] Waiting for connection
+[Wed May 09 20:14:27 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44143]...
+[Wed May 09 20:14:27 FET 2012] GET / HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+Cache-Control: max-age=0
+User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.79 Safari/535.11
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Encoding: gzip,deflate,sdch
+Accept-Language: en-US,en;q=0.8,be;q=0.6,ru;q=0.4
+Accept-Charset: windows-1251,utf-8;q=0.7,*;q=0.3
+If-Modified-Since: 17:13:55
+
+
+[Wed May 09 20:14:27 FET 2012] Got GET request
+[Wed May 09 20:14:27 FET 2012] Waiting for connection
+[Wed May 09 20:14:27 FET 2012] Writing to java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44143]...
+[Wed May 09 20:14:27 FET 2012] Waiting for connection
+[Wed May 09 20:14:27 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44143]...
+[Wed May 09 20:14:27 FET 2012] Waiting for connection
+[Wed May 09 20:14:28 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Wed May 09 20:14:28 FET 2012] Waiting for connection
+[Wed May 09 20:14:28 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44144]...
+[Wed May 09 20:14:28 FET 2012] GET /favicon.ico HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+Accept: */*
+User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.79 Safari/535.11
+Accept-Encoding: gzip,deflate,sdch
+Accept-Language: en-US,en;q=0.8,be;q=0.6,ru;q=0.4
+Accept-Charset: windows-1251,utf-8;q=0.7,*;q=0.3
+
+
+[Wed May 09 20:14:28 FET 2012] Waiting for connection
+[Wed May 09 20:15:09 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Wed May 09 20:15:09 FET 2012] Waiting for connection
+[Wed May 09 20:15:15 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44146]...
+[Wed May 09 20:15:15 FET 2012] GET / HTTP/1.1
+
+[Wed May 09 20:15:15 FET 2012] Got GET request
+[Wed May 09 20:15:15 FET 2012] Waiting for connection
+[Wed May 09 20:15:15 FET 2012] Writing to java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44146]...
+[Wed May 09 20:15:15 FET 2012] Waiting for connection
+[Wed May 09 20:15:36 FET 2012] 
+
+			Starting server...
+[Wed May 09 20:15:36 FET 2012] Binding port 8080 on localhost...
+[Wed May 09 20:15:36 FET 2012] Waiting for connection
+[Wed May 09 20:15:39 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Wed May 09 20:15:39 FET 2012] Waiting for connection
+[Wed May 09 20:15:48 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44148]...
+[Wed May 09 20:15:48 FET 2012] GET / HTTP/1.1
+
+[Wed May 09 20:15:48 FET 2012] Got GET request
+[Wed May 09 20:15:48 FET 2012] Waiting for connection
+[Wed May 09 20:15:48 FET 2012] Writing to java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44148]...
+[Wed May 09 20:15:48 FET 2012] Waiting for connection
+[Wed May 09 20:15:53 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Wed May 09 20:15:53 FET 2012] Waiting for connection
+[Wed May 09 20:15:53 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44153]...
+[Wed May 09 20:15:53 FET 2012] GET / HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+Cache-Control: max-age=0
+User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.79 Safari/535.11
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Encoding: gzip,deflate,sdch
+Accept-Language: en-US,en;q=0.8,be;q=0.6,ru;q=0.4
+Accept-Charset: windows-1251,utf-8;q=0.7,*;q=0.3
+If-Modified-Since: 17:14:27
+
+
+[Wed May 09 20:15:53 FET 2012] Got GET request
+[Wed May 09 20:15:53 FET 2012] Waiting for connection
+[Wed May 09 20:15:53 FET 2012] Writing to java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44153]...
+[Wed May 09 20:15:53 FET 2012] Waiting for connection
+[Wed May 09 20:15:53 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44153]...
+[Wed May 09 20:15:54 FET 2012] Waiting for connection
+[Wed May 09 20:15:54 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Wed May 09 20:15:54 FET 2012] Waiting for connection
+[Wed May 09 20:15:54 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:44154]...
+[Wed May 09 20:15:54 FET 2012] GET /favicon.ico HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+Accept: */*
+User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.79 Safari/535.11
+Accept-Encoding: gzip,deflate,sdch
+Accept-Language: en-US,en;q=0.8,be;q=0.6,ru;q=0.4
+Accept-Charset: windows-1251,utf-8;q=0.7,*;q=0.3
+
+
+[Wed May 09 20:15:54 FET 2012] Waiting for connection

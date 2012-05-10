@@ -9,7 +9,9 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import sha.SHABase;
 import sha.SHABruteForcer;
+import sun.misc.Regexp;
 
 /**
  *
@@ -22,18 +24,6 @@ import sha.SHABruteForcer;
  * POST - добавить хэш
  * NULL - пусто
  */
-enum Status
-{
-
-    NEED_TASK, SUCSESS, GET, POST, NULL
-};
-
-enum LogLevel
-{
-
-    LOW, MEDIUM, HIGH, TALKY
-};
-
 public class BruteServer implements Runnable
 {
 
@@ -41,36 +31,9 @@ public class BruteServer implements Runnable
     private static final String S_SUCSESS = "200\n";
     private static int AVG_CLI_COUNT = 10;
     private static final String CONFIG = "serverconfig.properties";
-
-    /**
-     * Класс контейнер для полученных данных
-     */
-    class Post
-    {
-
-        private Status status;
-        private String message;
-
-        public Post(Status status, String message)
-        {
-            this.status = status;
-            this.message = message;
-        }
-
-        public String getMessage()
-        {
-            return message;
-        }
-
-        public Status getStatus()
-        {
-            return status;
-        }
-    }
     // очередь хэшей для перебора
     Queue<SHABruteForcer> bruteforcerQueue = new PriorityQueue<SHABruteForcer>();
-    // текущий перебор
-    SHABruteForcer brutefrocerCurrent = null;
+    // текущий перебор    
     private ServerSocketChannel serverChannel;
     private Selector selector;
     private byte[] buffer = new byte[2048];
@@ -181,11 +144,13 @@ public class BruteServer implements Runnable
                         } else if (key.isWritable())
                         {
                             logger.addRecord("Writing to " + key.channel().toString() + "...", LogLevel.HIGH);
-
                             ByteBuffer byteBuffer = connections.get(key);
                             SocketChannel socketChannel = (SocketChannel) key.channel();
                             socketChannel.write(byteBuffer);
-                            key.interestOps(SelectionKey.OP_READ);
+                            if (byteBuffer.limit() == byteBuffer.position())
+                            {
+                                key.interestOps(SelectionKey.OP_READ);
+                            }
                         }
                     }
                     keys.clear();
@@ -225,7 +190,8 @@ public class BruteServer implements Runnable
                 return new Post(status, message);
             }
 
-            if (charBuffer.toString().substring(0, charBuffer.toString().indexOf("\n")).toString().equals("GET / HTTP/1.1\r"))
+
+            if (charBuffer.toString().substring(0, charBuffer.toString().indexOf("\n")).toString().matches("GET .* HTTP/1.1\r"))
             {
                 status = Status.GET;
                 logger.addRecord("Got " + Status.GET + " request", logLevel);
@@ -253,8 +219,9 @@ public class BruteServer implements Runnable
         key.cancel();
     }
 
-    public synchronized void shutdownServer()
+    public synchronized void shutdownServer() throws IOException
     {
+        logger.addRecord("Shutting down...", LogLevel.LOW);
         Set<SelectionKey> keySet = connections.keySet();
         for (SelectionKey key : keySet)
         {
@@ -272,29 +239,29 @@ public class BruteServer implements Runnable
         }
         if (serverChannel.isOpen())
         {
-            try
-            {
-                serverChannel.close();
-                selector.close();
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-            }
+
+            serverChannel.close();
+            selector.close();
+
 
         }
     }
 
     private void processPost(Post post, SelectionKey key)
     {
-        if (post==null) return;
+        if (post == null)
+        {
+            return;
+        }
         switch (post.getStatus())
         {
             case GET:
             {
+                httpConnections.add(key);
                 ByteBuffer byteBuffer = connections.get(key);
                 byteBuffer.clear();
                 byteBuffer.position(0);
-                SendPage sp = new SendPage(connections.size()-httpConnections.size(),110000, 100000,null);
+                HTTPConnector sp = new HTTPConnector(connections.size() - httpConnections.size(), bruteforcerQueue.peek() == null ? 0 : bruteforcerQueue.peek().peekLastTask(), SHABase.TOTAL, bruteforcerQueue.peek() == null ? "" : bruteforcerQueue.peek().getHash(), post);
                 byteBuffer.limit(sp.getPage().length());
                 byteBuffer.put(sp.getPage().getBytes());
                 byteBuffer.flip();

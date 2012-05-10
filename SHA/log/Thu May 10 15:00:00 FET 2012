@@ -1,0 +1,112 @@
+[Thu May 10 15:00:30 FET 2012] 
+
+			Starting server...
+[Thu May 10 15:00:30 FET 2012] Binding port 8080 on localhost...
+[Thu May 10 15:00:30 FET 2012] Waiting for connection
+[Thu May 10 15:04:46 FET 2012] 
+
+			Starting server...
+[Thu May 10 15:04:46 FET 2012] Binding port 8080 on localhost...
+[Thu May 10 15:04:51 FET 2012] 
+
+			Starting server...
+[Thu May 10 15:04:51 FET 2012] Binding port 8080 on localhost...
+[Thu May 10 15:04:51 FET 2012] Waiting for connection
+[Thu May 10 15:05:49 FET 2012] 
+
+			Starting server...
+[Thu May 10 15:05:49 FET 2012] Binding port 8080 on localhost...
+[Thu May 10 15:05:49 FET 2012] Waiting for connection
+[Thu May 10 15:05:55 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Thu May 10 15:05:55 FET 2012] Waiting for connection
+[Thu May 10 15:05:55 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:36471]...
+[Thu May 10 15:05:55 FET 2012] GET / HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.79 Safari/535.11
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Encoding: gzip,deflate,sdch
+Accept-Language: en-US,en;q=0.8,be;q=0.6,ru;q=0.4
+Accept-Charset: windows-1251,utf-8;q=0.7,*;q=0.3
+If-Modified-Since: 11:59:55
+
+
+[Thu May 10 15:05:55 FET 2012] Got GET request
+[Thu May 10 15:05:55 FET 2012] Waiting for connection
+[Thu May 10 15:05:55 FET 2012] Writing to java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:36471]...
+[Thu May 10 15:05:55 FET 2012] Waiting for connection
+[Thu May 10 15:05:55 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:36471]...
+[Thu May 10 15:05:55 FET 2012] Waiting for connection
+[Thu May 10 15:05:56 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Thu May 10 15:05:56 FET 2012] Waiting for connection
+[Thu May 10 15:05:56 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:36472]...
+[Thu May 10 15:05:56 FET 2012] GET / HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.79 Safari/535.11
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Encoding: gzip,deflate,sdch
+Accept-Language: en-US,en;q=0.8,be;q=0.6,ru;q=0.4
+Accept-Charset: windows-1251,utf-8;q=0.7,*;q=0.3
+If-Modified-Since: 12:05:55
+
+
+[Thu May 10 15:05:56 FET 2012] Got GET request
+[Thu May 10 15:05:56 FET 2012] Waiting for connection
+[Thu May 10 15:05:56 FET 2012] Writing to java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:36472]...
+[Thu May 10 15:05:56 FET 2012] Waiting for connection
+[Thu May 10 15:05:56 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:36472]...
+[Thu May 10 15:05:56 FET 2012] Waiting for connection
+[Thu May 10 15:05:56 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Thu May 10 15:05:56 FET 2012] Waiting for connection
+[Thu May 10 15:05:56 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:36473]...
+[Thu May 10 15:05:56 FET 2012] GET /favicon.ico HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+Accept: */*
+User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.79 Safari/535.11
+Accept-Encoding: gzip,deflate,sdch
+Accept-Language: en-US,en;q=0.8,be;q=0.6,ru;q=0.4
+Accept-Charset: windows-1251,utf-8;q=0.7,*;q=0.3
+If-Modified-Since: 11:59:55
+
+
+[Thu May 10 15:05:56 FET 2012] Got GET request
+[Thu May 10 15:05:56 FET 2012] Waiting for connection
+[Thu May 10 15:05:56 FET 2012] Writing to java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:36473]...
+[Thu May 10 15:05:56 FET 2012] Waiting for connection
+[Thu May 10 15:05:56 FET 2012] Reading from java.nio.channels.SocketChannel[connected local=/127.0.0.1:8080 remote=/127.0.0.1:36473]...
+[Thu May 10 15:05:56 FET 2012] Waiting for connection
+[Thu May 10 15:06:24 FET 2012] 
+
+			Starting server...
+[Thu May 10 15:06:24 FET 2012] Binding port 8080 on localhost...
+[Thu May 10 15:06:24 FET 2012] Waiting for connection
+[Thu May 10 15:06:27 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Thu May 10 15:06:27 FET 2012] Waiting for connection
+[Thu May 10 15:06:27 FET 2012] Got GET request
+[Thu May 10 15:06:27 FET 2012] Waiting for connection
+[Thu May 10 15:06:27 FET 2012] Waiting for connection
+[Thu May 10 15:06:27 FET 2012] Waiting for connection
+[Thu May 10 15:06:28 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Thu May 10 15:06:28 FET 2012] Waiting for connection
+[Thu May 10 15:06:28 FET 2012] Got GET request
+[Thu May 10 15:06:28 FET 2012] Waiting for connection
+[Thu May 10 15:06:28 FET 2012] Waiting for connection
+[Thu May 10 15:06:28 FET 2012] Waiting for connection
+[Thu May 10 15:06:43 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Thu May 10 15:06:43 FET 2012] Waiting for connection
+[Thu May 10 15:06:43 FET 2012] Got GET request
+[Thu May 10 15:06:43 FET 2012] Waiting for connection
+[Thu May 10 15:06:43 FET 2012] Waiting for connection
+[Thu May 10 15:06:43 FET 2012] Waiting for connection
+[Thu May 10 15:06:43 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Thu May 10 15:06:43 FET 2012] Waiting for connection
+[Thu May 10 15:06:43 FET 2012] Got GET request
+[Thu May 10 15:06:43 FET 2012] Waiting for connection
+[Thu May 10 15:06:43 FET 2012] Waiting for connection
+[Thu May 10 15:06:43 FET 2012] Waiting for connection
+[Thu May 10 15:40:54 FET 2012] Got connection from sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+[Thu May 10 15:40:54 FET 2012] Waiting for connection
+[Thu May 10 15:40:54 FET 2012] Waiting for connection
+[Thu May 10 15:40:55 FET 2012] Waiting for connection
