@@ -1,5 +1,6 @@
 
-import sha.*;
+import java.io.IOException;
+import server.BruteServer;
 public class Main {
 
     /**
@@ -7,24 +8,17 @@ public class Main {
      */
     public static void main(String[] args) 
     {
-        String hash = "3c01bdbb26f358bab27f267924aa2c9a03fcfdb8";
-        SHAWorker worker = new SHAWorker(new SHAStep(0, 1000000), hash);
+        String hash = "9865d483bc5a94f2e30056fc256ed3066af54d0";
         try
         {
-            worker.join ();
+          BruteServer bruteServer = new BruteServer ();
+          bruteServer.run();
         }
-        catch  (InterruptedException e)
+        catch (IOException e)
         {
             System.out.println(e);
         }
-        if (worker.isSuccses())
-        {
-            System.out.println(worker.getMsg());
-        }
-        else
-        {
-            System.out.println("FAIL!");
-        }
+         
 
     }
 

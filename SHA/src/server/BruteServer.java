@@ -1,10 +1,8 @@
 package server;
 
+import com.sun.org.apache.bcel.internal.generic.GETFIELD;
 import java.io.*;
 import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.*;
 import java.nio.channels.*;
 import java.nio.ByteBuffer;
@@ -12,22 +10,44 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import sha.SHABruteForcer;
-import sha.SHAStep;
 
 /**
  *
  * @author lucian
  */
-enum Status {NEED_TASK,SUCSESS};
+/**
+ * NEED_TASK - клиент ожидает порцию задания
+ * SUCSESS - клиент нашел исходное сообщение
+ * GET - запрос на старницу веб-интерфейса
+ * POST - добавить хэш
+ * NULL - пусто
+ */
+enum Status
+{
+
+    NEED_TASK, SUCSESS, GET, POST, NULL
+};
+
+enum LogLevel
+{
+
+    LOW, MEDIUM, HIGH, TALKY
+};
+
 public class BruteServer implements Runnable
 {
 
     private static final String S_NEED_TASK = "100\n";
     private static final String S_SUCSESS = "200\n";
     private static int AVG_CLI_COUNT = 10;
+    private static final String CONFIG = "serverconfig.properties";
 
+    /**
+     * Класс контейнер для полученных данных
+     */
     class Post
     {
+
         private Status status;
         private String message;
 
@@ -47,8 +67,10 @@ public class BruteServer implements Runnable
             return status;
         }
     }
-
-    SHABruteForcer bruteForcer;
+    // очередь хэшей для перебора
+    Queue<SHABruteForcer> bruteforcerQueue = new PriorityQueue<SHABruteForcer>();
+    // текущий перебор
+    SHABruteForcer brutefrocerCurrent = null;
     private ServerSocketChannel serverChannel;
     private Selector selector;
     private byte[] buffer = new byte[2048];
@@ -56,24 +78,59 @@ public class BruteServer implements Runnable
     private CharBuffer charBuffer = CharBuffer.allocate(2048);
     private CharsetDecoder decoder = charset.newDecoder();
     Map<SelectionKey, ByteBuffer> connections = new HashMap<SelectionKey, ByteBuffer>();
+    Set<SelectionKey> httpConnections = new HashSet<SelectionKey>();
+    // подобрали текущий хэш
     private boolean succses = false;
+    // путь директории с логами
+    private String logDir;
+    // уровень логгирования
+    private LogLevel logLevel;
+    private Logger logger;
 
-    public BruteServer(int port,String hash) throws IOException
+    public BruteServer() throws IOException
     {
+        Properties prop = new Properties();
+        FileInputStream fileIn = new FileInputStream(CONFIG);
+        int port = 0;
+        prop.load(fileIn);
+        port = Integer.parseInt(prop.getProperty("port"));
+        logDir = prop.getProperty("log");
+        String tmp = prop.getProperty("loglevel").toUpperCase();
+        logLevel = LogLevel.MEDIUM;
+        if (tmp.equals("HIGH"))
+        {
+            logLevel = LogLevel.HIGH;
+        }
+        if (tmp.equals("MEDIUM"))
+        {
+            logLevel = LogLevel.MEDIUM;
+        }
+        if (tmp.equals("LOW"))
+        {
+            logLevel = LogLevel.LOW;
+        }
+        if (tmp.equals("TALKY"))
+        {
+            logLevel = LogLevel.TALKY;
+        }
+        logger = new Logger(logDir, logLevel);
+        logger.addRecord("\n\n\t\t\tStarting server...", logLevel);
         serverChannel = ServerSocketChannel.open();
         serverChannel.configureBlocking(false);
+        logger.addRecord("Binding port " + Integer.toString(port) + " on localhost...", LogLevel.LOW);
         serverChannel.socket().bind(new InetSocketAddress(port));
         selector = Selector.open();
         serverChannel.register(selector, SelectionKey.OP_ACCEPT);
-        bruteForcer = new SHABruteForcer(hash, AVG_CLI_COUNT);
     }
 
     public void run()
     {
         while (true)
         {
+
             try
             {
+                logger.addRecord("Waiting for connection", LogLevel.MEDIUM);
                 if (selector.isOpen())
                 {
                     selector.select();
@@ -86,6 +143,7 @@ public class BruteServer implements Runnable
                         }
                         if (key.isAcceptable())
                         {
+                            logger.addRecord("Got connection from " + key.channel().toString(), LogLevel.MEDIUM);
                             ServerSocketChannel serverChanelAccept = (ServerSocketChannel) key.channel();
                             SocketChannel socketChannel = serverChanelAccept.accept();
                             socketChannel.configureBlocking(false);
@@ -94,6 +152,7 @@ public class BruteServer implements Runnable
                             connections.put(selectionKeyRead, byteBuffer);
                         } else if (key.isReadable())
                         {
+                            logger.addRecord("Reading from " + key.channel().toString() + "...", LogLevel.HIGH);
                             SocketChannel socketChannel = (SocketChannel) key.channel();
                             int read;
                             ByteBuffer byteBuffer = connections.get(key);
@@ -114,70 +173,26 @@ public class BruteServer implements Runnable
                             {
                                 byteBuffer.flip();
                                 byteBuffer.mark();
+                                // Разбираем содержимое буфера
                                 Post post = decodeAndCheck(read, byteBuffer);
-                                if (post!=null)
-                                {
-                                    byteBuffer.reset();                                   
-                                    switch (post.getStatus())
-                                    {
-                                        case NEED_TASK:
-                                        {
-                                            key.interestOps(SelectionKey.OP_WRITE);                                           
-                                            break;
-                                        }
-                                        case SUCSESS:
-                                        {
-                                            System.out.println (post.getMessage());
-                                            succses = true;
-                                            for (SelectionKey skey:selector.selectedKeys())
-                                            {
-                                                skey.interestOps(SelectionKey.OP_WRITE);
-                                            }
-                                        }
-                                    }
-                                }
+                                byteBuffer.reset();
+                                processPost(post, key);
                             }
                         } else if (key.isWritable())
                         {
+                            logger.addRecord("Writing to " + key.channel().toString() + "...", LogLevel.HIGH);
+
                             ByteBuffer byteBuffer = connections.get(key);
                             SocketChannel socketChannel = (SocketChannel) key.channel();
-                            if (succses)
-                            {
-                                byteBuffer.clear();
-                                byteBuffer.put("DIE\n".getBytes());
-                                socketChannel.write(byteBuffer);
-                            }
-                            if (bruteForcer.hasNext())
-                            {
-                                SHAStep step = bruteForcer.next();
-                                try
-                                {
-                                    byteBuffer.clear();
-                                    byteBuffer.put(bruteForcer.getHash().getBytes());
-                                    byteBuffer.put("\n".getBytes());
-                                    byteBuffer.put(step.getBytes());
-                                    int result = socketChannel.write(byteBuffer);
-                                    if (result == -1)
-                                    {
-                                        closeChannel(key);
-                                    }
-                                } catch (IOException e)
-                                {
-                                    closeChannel(key);
-                                }
-                                if (byteBuffer.position() == byteBuffer.limit())
-                                {
-                                    key.interestOps(SelectionKey.OP_READ);
-                                }
-                            }
-                            else
-                            {
-                                closeChannel(key);
-                            }
+                            socketChannel.write(byteBuffer);
+                            key.interestOps(SelectionKey.OP_READ);
                         }
                     }
                     keys.clear();
-                } else break;
+                } else
+                {
+                    break;
+                }
             } catch (IOException e)
             {
                 e.printStackTrace();
@@ -185,31 +200,50 @@ public class BruteServer implements Runnable
         }
     }
 
-    private Post decodeAndCheck (int read, ByteBuffer byteBuffer)
+    private Post decodeAndCheck(int read, ByteBuffer byteBuffer)
     {
         charBuffer.clear();
-        decoder.decode(byteBuffer,charBuffer,false);
+        decoder.decode(byteBuffer, charBuffer, false);
         charBuffer.flip();
         Status status = null;
         String message = null;
-        if (S_NEED_TASK.equals(charBuffer.toString().substring(0,3)))
+
+        try
         {
-            status = Status.NEED_TASK;
-            return new Post(status, message);
-        }
-        if (S_SUCSESS.equals(charBuffer.toString().substring(0,3)))
+            logger.addRecord(charBuffer.toString(), logLevel.TALKY);
+            if (S_NEED_TASK.equals(charBuffer.toString().substring(0, 3)))
+            {
+                status = Status.NEED_TASK;
+                logger.addRecord("Got " + Status.NEED_TASK + " request", logLevel);
+                return new Post(status, message);
+            }
+            if (S_SUCSESS.equals(charBuffer.toString().substring(0, 3)))
+            {
+                status = Status.SUCSESS;
+                message = charBuffer.toString().substring(4, charBuffer.toString().length());
+                logger.addRecord("Got " + Status.SUCSESS + " request", logLevel);
+                return new Post(status, message);
+            }
+
+            if (charBuffer.toString().substring(0, charBuffer.toString().indexOf("\n")).toString().equals("GET / HTTP/1.1\r"))
+            {
+                status = Status.GET;
+                logger.addRecord("Got " + Status.GET + " request", logLevel);
+                return new Post(status, message);
+            }
+
+        } catch (IOException e)
         {
-            status = Status.SUCSESS;
-            message = charBuffer.toString().substring(4,charBuffer.toString().length());
-            return new Post(status, message);
+            e.printStackTrace();
         }
+
 
         return null;
     }
 
-
-    private void closeChannel (SelectionKey key) throws IOException
+    private void closeChannel(SelectionKey key) throws IOException
     {
+        httpConnections.remove(key);
         connections.remove(key);
         SocketChannel socketChannel = (SocketChannel) key.channel();
         if (socketChannel.isConnected())
@@ -219,10 +253,10 @@ public class BruteServer implements Runnable
         key.cancel();
     }
 
-    public  synchronized void shutdownServer ()
+    public synchronized void shutdownServer()
     {
         Set<SelectionKey> keySet = connections.keySet();
-        for (SelectionKey key:keySet)
+        for (SelectionKey key : keySet)
         {
             SocketChannel socketChannel = (SocketChannel) key.channel();
             if (socketChannel.isConnected())
@@ -230,8 +264,7 @@ public class BruteServer implements Runnable
                 try
                 {
                     socketChannel.close();
-                }
-                catch (IOException e)
+                } catch (IOException e)
                 {
                     e.printStackTrace();
                 }
@@ -243,12 +276,50 @@ public class BruteServer implements Runnable
             {
                 serverChannel.close();
                 selector.close();
-            }
-            catch (IOException e)
+            } catch (IOException e)
             {
-
+                e.printStackTrace();
             }
-                
+
+        }
+    }
+
+    private void processPost(Post post, SelectionKey key)
+    {
+        if (post==null) return;
+        switch (post.getStatus())
+        {
+            case GET:
+            {
+                ByteBuffer byteBuffer = connections.get(key);
+                byteBuffer.clear();
+                byteBuffer.position(0);
+                SendPage sp = new SendPage(connections.size()-httpConnections.size(),110000, 100000,null);
+                byteBuffer.limit(sp.getPage().length());
+                byteBuffer.put(sp.getPage().getBytes());
+                byteBuffer.flip();
+                key.interestOps(SelectionKey.OP_WRITE);
+                // Выдать статистику
+                break;
+            }
+            case NEED_TASK:
+            {
+                // Выдать таск
+                break;
+            }
+            case POST:
+            {
+                // Добавить таск в очередь
+                // Обновить страничку
+                break;
+            }
+            case SUCSESS:
+            {
+                // Вывести результат
+                // Снять такск из очереди
+                break;
+            }
+
         }
     }
 }
