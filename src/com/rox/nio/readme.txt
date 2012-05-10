@@ -1,1 +1,0 @@
-All NIO examples are taken from The Rox Java NIO Tutorial http://rox-xmlrpc.sourceforge.net/niotut/
