@@ -39,7 +39,7 @@ body
 #addHash
 {
     margin: 3px auto;
-    width: 300px;
+    width: 600px;
 }
 
 #container
@@ -77,8 +77,7 @@ overflow:hidden;
 
 .stat
 {
-	padding:0.4em 5em;	
-	width:100%;
+	padding:0.4em 5em;		
 	background:#EDEAE3;
 	color:#34302D;
 } 

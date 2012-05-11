@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import sha.SHABase;
 import sha.SHABruteForcer;
 
 /**
@@ -29,6 +30,7 @@ public class BruteServer implements Runnable
     private static final String CONFIG = "serverconfig.properties";
     // очередь хэшей для перебора
     Queue<SHABruteForcer> bruteforcerQueue = new PriorityQueue<SHABruteForcer>();
+    Map<SHABruteForcer, TaskContainer> taskMap = new HashMap<SHABruteForcer, TaskContainer>();
     // текущий перебор    
     private ServerSocketChannel serverChannel;
     private Selector selector;
@@ -45,6 +47,38 @@ public class BruteServer implements Runnable
     // уровень логгирования
     private LogLevel logLevel;
     private Logger logger;
+
+
+    class TaskContainer
+    {
+        private String hash;
+        private String result;
+        private String state;
+
+        public TaskContainer(String hash, String result, String state)
+        {
+            this.hash = hash;
+            this.result = result;
+            this.state = state;
+        }
+
+        public String getHash()
+        {
+            return hash;
+        }
+
+        public String getResult()
+        {
+            return result;
+        }
+
+        public String getState()
+        {
+            return state;
+        }
+        
+    }
+
 
     public BruteServer() throws IOException
     {
@@ -142,7 +176,7 @@ public class BruteServer implements Runnable
                             logger.addRecord("Writing to " + key.channel().toString() + "...", LogLevel.HIGH);
                             ByteBuffer byteBuffer = connections.get(key);
                             SocketChannel socketChannel = (SocketChannel) key.channel();
-                            while (byteBuffer.hasRemaining()) 
+                            while (byteBuffer.hasRemaining())
                             {
                                 socketChannel.write(byteBuffer);
                             }
@@ -191,7 +225,7 @@ public class BruteServer implements Runnable
             }
 
 
-            if (charBuffer.toString().substring(0, charBuffer.toString().indexOf("\n")).toString().matches("* HTTP/1.1\r"))
+            if (charBuffer.toString().substring(0, charBuffer.toString().indexOf("\n")).toString().matches(".* HTTP/1.1\r"))
             {
                 status = Status.HTTP;
                 logger.addRecord("Got " + Status.HTTP + " request", logLevel.MEDIUM);
@@ -262,11 +296,44 @@ public class BruteServer implements Runnable
                 ByteBuffer byteBuffer = connections.get(key);
                 byteBuffer.clear();
                 byteBuffer.position(0);
-                
-               // byteBuffer.limit(sp.getPage().length());
-               // byteBuffer.put(sp.getPage().getBytes());
-                byteBuffer.flip();
-                key.interestOps(SelectionKey.OP_WRITE);
+                HTTPRequest httpRequest = new HTTPRequest(post.getMessage());
+                if (httpRequest.getMethod() == Method.POST)
+                {
+                    // получен POST запрос
+                    String request = httpRequest.getContent();
+                    if (request.matches("Hash=[0-9a-f]{5,40}&addHashBtn=Add"))
+                    {
+                        String hash = request.substring("Hash=".length(),request.indexOf('&'));
+                        SHABruteForcer bf = new SHABruteForcer(hash,connections.size());
+                        if (!taskMap.containsKey(bf))
+                        {
+                            bruteforcerQueue.add(bf);
+                            taskMap.put(bf, new TaskContainer(hash, "N/A", "WAITING"));
+                        }
+                    }
+                }
+                    HTTPAdapter httpAdapter = new HTTPAdapter(httpRequest.getUrl());
+                    byte [] toWrite =null;
+                    try
+                    {
+                            toWrite =httpAdapter.getResponse(httpAdapter.getContent(), httpAdapter.getMime(),"200");
+                            byte [] tmp = httpAdapter.getContent();
+                            if (httpRequest.getUrl().equals("/"))
+                            {
+                                tmp = parseStat(tmp);
+                                toWrite = httpAdapter.getResponse(tmp, httpAdapter.getMime(), "200");
+                            }
+                            
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                    byteBuffer.limit(toWrite.length);
+                    byteBuffer.put(toWrite);
+                    byteBuffer.flip();
+                    key.interestOps(SelectionKey.OP_WRITE);
+
                 // Выдать статистику
                 break;
             }
@@ -275,7 +342,7 @@ public class BruteServer implements Runnable
                 // Выдать таск
                 break;
             }
-           
+
             case SUCSESS:
             {
                 // Вывести результат
@@ -284,5 +351,25 @@ public class BruteServer implements Runnable
             }
 
         }
+    }
+
+    private byte[] parseStat (byte [] bytes)
+    {
+        String tmp = new String(bytes);
+        String tasks = "";
+        Set<Map.Entry<SHABruteForcer,TaskContainer>> entries = taskMap.entrySet();
+        Iterator<Map.Entry<SHABruteForcer,TaskContainer>> iter = entries.iterator();
+        while (iter.hasNext())
+        {
+           Map.Entry<SHABruteForcer,TaskContainer> entry =iter.next();
+           TaskContainer task = entry.getValue();
+           tasks = tasks+ "<div class=\"task_entry\"><ul><li><div class=\"status\">"+task.state+":</div></li><li><div class=\"hash\">"+task.hash+"</div></li><li><div class=\"result\">"+task.result+"</div></li><li> <img src=\"img/close.png\" height=20px width=20px> </li></ul></div>";
+        }
+        
+        tmp=tmp.replaceAll("#clients", Long.toString(connections.size()-httpConnections.size()));
+        tmp=tmp.replaceAll("#total", Long.toString(SHABase.TOTAL));
+        tmp=tmp.replaceAll("#lastportion", bruteforcerQueue.peek()==null?"Queue empty":Long.toString(bruteforcerQueue.peek().peekLastTask()));
+        tmp=tmp.replaceAll("#tasks", tasks);
+        return tmp.getBytes();
     }
 }

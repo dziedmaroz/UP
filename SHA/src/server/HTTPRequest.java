@@ -60,15 +60,16 @@ class HTTPRequest
             while (strTok.hasMoreTokens())
             {
                 String tmp = strTok.nextToken();
-                if (tmp.matches("Content-length: .*"))
+                if (tmp.matches("Content-[lL]ength: .*"))
                 {
                     tmp = tmp.replace("Content-length: ", "");
+                     tmp = tmp.replace("Content-Length: ", "");
                     tmp = tmp.replace(" ", "");
                     contentLength = Integer.parseInt(tmp);
                     break;
                 }
             }
-            content = header.substring(header.length() - contentLength - 1, contentLength);
+            content = header.substring(header.length() - contentLength  );
         }
 
     }

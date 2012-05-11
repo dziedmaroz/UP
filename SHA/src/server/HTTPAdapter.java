@@ -5,8 +5,13 @@
 package server;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.StringTokenizer;
@@ -16,36 +21,19 @@ import java.util.TimeZone;
  *
  * @author fpm.arhangel
  */
-
-
-
-
 class HTTPAdapter
 {
 
-   
+    private String url;
 
-   
-    private int connetcions;
-    private long lastTask;
-    private long total;
-    private String hash;
-    private Post post;
-
-    public HTTPAdapter(int connetcions, long lastTask, long total, String hash, Post post)
+    public HTTPAdapter(String url)
     {
-        this.connetcions = connetcions;
-        this.lastTask = lastTask;
-        this.total = total;
-        this.hash = hash;
-        this.post = post;
+        this.url = url;
     }
-
-    
 
     private String makeHeader(long contentLength, String mime, String responseState)
     {
-        String header = "HTTP/1.1 "+responseState+"\n";
+        String header = "HTTP/1.1 " + responseState + "\n";
 
         // дата создания в GMT
         DateFormat df = DateFormat.getTimeInstance();
@@ -62,8 +50,8 @@ class HTTPAdapter
         header = header + "Content-Type: " + mime + "\n";
 
         // остальные заголовки
-        header = header + "Connection: close\n" + "Server: BruteForce\n\n";
-        
+        header = header + "Connection: close\n" + "Server: BruteForcer\n\n";
+
 
         return header;
 
@@ -71,15 +59,83 @@ class HTTPAdapter
 
     public byte[] getResponse(byte[] content, String mime, String responseState)
     {
-       String header = makeHeader(total, mime, responseState);
-       byte[] headerBytes = header.getBytes();
-       int headerLen = header.length();
+        if (content==null) return make404();
+        String header = makeHeader( content.length, mime,  responseState);
+        byte[] headerBytes = header.getBytes();
+        int headerLen = header.length();
 
-       byte [] response = new byte [content.length+headerLen];
-       for (int i=0;i<headerLen+content.length;i++)
-       {
-            response[i]=i<headerLen?headerBytes[i]:content[i-headerLen];
-       }
-       return response;
+        byte[] response = new byte[content.length + headerLen];
+        for (int i = 0; i < headerLen + content.length; i++)
+        {
+            response[i] = i < headerLen ? headerBytes[i] : content[i - headerLen];
+        }
+        return response;
+    }
+
+    public String getMime ()
+    {
+        File file = new File(url);
+        String mime = "text/plain";
+        String ext = file.getName().substring(file.getName().lastIndexOf(".")==-1?0:file.getName().lastIndexOf("."));
+        if(ext.equalsIgnoreCase(".html")) mime = "text/html";
+        if(ext.equalsIgnoreCase(".htm"))  mime = "text/html";
+        if(ext.equalsIgnoreCase(".gif"))  mime = "image/gif";
+        if(ext.equalsIgnoreCase(".jpg"))  mime = "image/jpeg";
+        if(ext.equalsIgnoreCase(".jpeg")) mime = "image/jpeg";
+        if(ext.equalsIgnoreCase(".bmp"))  mime = "image/x-xbitmap";
+        if(ext.equalsIgnoreCase(".png"))  mime = "image/png";
+        if(ext.equalsIgnoreCase(".css"))  mime = "text/css";
+
+        return mime;
+
+    }
+    public byte[] getContent () throws IOException
+    {
+        byte[] content = null;
+        if (url.equals("/")) url ="index.html";
+        if (url.charAt(0)=='/') url = url.substring(1);
+        File file = new File (url);
+        if (file.exists() && file.isFile() && file.canRead())
+        {
+            content = new byte [(int)file.length()];
+            try
+            {
+                InputStream  isr = new FileInputStream (file);
+                int read = isr.read(content);
+                if (read<content.length) throw new IOException("Loss of data");
+            }
+            catch (FileNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+
+        }
+        return content;
+    }
+    private byte [] make404 ()
+    {
+        String header = "HTTP/1.1 " + "404" + "\n";
+
+        // дата создания в GMT
+        DateFormat df = DateFormat.getTimeInstance();
+        df.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+        // время последней модификации файла в GMT
+        header = header + "Last-Modified: " + df.format(new Date()) + "\n";
+
+
+        // длина файла
+        header = header + "Content-Length: " + "404".length() + "\n";
+
+        // строка с MIME кодировкой
+        header = header + "Content-Type: " + "text/plain" + "\n";
+
+        // остальные заголовки
+        header = header + "Connection: close\n" + "Server: BruteForcer\n\n";
+        header+="404";
+
+        return header.getBytes();
     }
 }
+
+
