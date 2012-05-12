@@ -15,8 +15,8 @@ import sha.SHAStep;
 public class BruteServer implements Runnable
 {
 
-    private static final String S_NEED_TASK = "100\n";
-    private static final String S_SUCSESS = "200\n";
+    private static final String S_NEED_TASK = "100";
+    private static final String S_SUCSESS = "200";
     private static final String CONFIG = "serverconfig.properties";
     // очередь хэшей для перебора
     ArrayDeque<String> hashQueue = new ArrayDeque<String>();
@@ -24,11 +24,10 @@ public class BruteServer implements Runnable
     Map<String, TaskContainer> taskMap = new HashMap<String, TaskContainer>();
     // текущий перебор
     SHABruteForcer bruteForcer;
-
     //
-    Map<String,String> complete = new HashMap<String, String>();
-
-    
+    Map<String, String> complete = new HashMap<String, String>();
+    // ожижают заданий
+    Set<SelectionKey> waiting = new HashSet<SelectionKey>();
     private ServerSocketChannel serverChannel;
     private Selector selector;
     private byte[] buffer = new byte[2048];
@@ -88,8 +87,6 @@ public class BruteServer implements Runnable
         {
             this.state = state;
         }
-
-        
     }
 
     public BruteServer() throws IOException
@@ -157,31 +154,64 @@ public class BruteServer implements Runnable
                             connections.put(selectionKeyRead, byteBuffer);
                         } else if (key.isReadable())
                         {
-                            logger.addRecord("Reading from " + key.channel().toString() + "...", LogLevel.HIGH);
-                            SocketChannel socketChannel = (SocketChannel) key.channel();
-                            int read;
-                            ByteBuffer byteBuffer = connections.get(key);
-                            byteBuffer.clear();
-                            try
+                            // Если уже ожидает задания
+                            if (waiting.contains(key))
                             {
-                                read = socketChannel.read(byteBuffer);
-                            } catch (IOException e)
+                                waiting.remove(key);
+
+                                byte[] task = makeNewTask();
+                                // И если задания есть
+                                if (task != null)
+                                {
+                                    // Выдать таск
+                                    ByteBuffer byteBuffer = connections.get(key);
+                                    byteBuffer.clear();
+                                    byteBuffer.position(0);
+                                    try
+                                    {
+                                        logger.addRecord("Sending new task (" + new String(task) + ") to " + key.channel().toString(), logLevel.MEDIUM);
+                                    } catch (IOException e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+                                    byteBuffer.limit(task.length);
+                                    byteBuffer.put(task);
+                                    byteBuffer.flip();
+                                    key.interestOps(SelectionKey.OP_WRITE);
+                                } else
+                                {
+                                    // Ждем дальше
+                                    waiting.add(key);
+                                }
+                                continue;
+                            } else
                             {
-                                closeChannel(key);
-                                break;
-                            }
-                            if (read == -1)
-                            {
-                                closeChannel(key);
-                                break;
-                            } else if (read > 0)
-                            {
-                                byteBuffer.flip();
-                                byteBuffer.mark();
-                                // Разбираем содержимое буфера
-                                Post post = decodeAndCheck(read, byteBuffer);
-                                byteBuffer.reset();
-                                processPost(post, key);
+                                logger.addRecord("Reading from " + key.channel().toString() + "...", LogLevel.HIGH);
+                                SocketChannel socketChannel = (SocketChannel) key.channel();
+                                int read;
+                                ByteBuffer byteBuffer = connections.get(key);
+                                byteBuffer.clear();
+                                try
+                                {
+                                    read = socketChannel.read(byteBuffer);
+                                } catch (IOException e)
+                                {
+                                    closeChannel(key);
+                                    break;
+                                }
+                                if (read == -1)
+                                {
+                                    closeChannel(key);
+                                    break;
+                                } else if (read > 0)
+                                {
+                                    byteBuffer.flip();
+                                    byteBuffer.mark();
+                                    // Разбираем содержимое буфера
+                                    Post post = decodeAndCheck(read, byteBuffer);
+                                    byteBuffer.reset();
+                                    processPost(post, key);
+                                }
                             }
                         } else if (key.isWritable())
                         {
@@ -364,19 +394,27 @@ public class BruteServer implements Runnable
                 ByteBuffer byteBuffer = connections.get(key);
                 byteBuffer.clear();
                 byteBuffer.position(0);
-                byte [] task = makeNewTask();
-                try
+                byte[] task = makeNewTask();
+                //Если заданий нет
+                if (task == null)
                 {
-                    logger.addRecord("Sending new task ("+new String (task)+") to "+key.channel().toString(), logLevel.MEDIUM);
-                }
-                catch (IOException e)
+                    // Ставим в очередь на ожидание заданий
+                    waiting.add(key);
+                } else
                 {
-                    e.printStackTrace();
+                    //Иначе выдаем таск
+                    try
+                    {
+                        logger.addRecord("Sending new task (" + new String(task) + ") to " + key.channel().toString(), logLevel.MEDIUM);
+                    } catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                    byteBuffer.limit(task.length);
+                    byteBuffer.put(task);
+                    byteBuffer.flip();
+                    key.interestOps(SelectionKey.OP_WRITE);
                 }
-                byteBuffer.limit(task.length);
-                byteBuffer.put(task);
-                byteBuffer.flip();
-                key.interestOps(SelectionKey.OP_WRITE);
                 break;
             }
 
@@ -389,13 +427,12 @@ public class BruteServer implements Runnable
                 String message = strTokenizer.nextToken();
                 try
                 {
-                    logger.addRecord("Succseded task. Hash: "+hash+" Message: "+message, logLevel.MEDIUM);
-                }
-                catch (IOException e)
+                    logger.addRecord("Succseded task. Hash: " + hash + " Message: " + message, logLevel.MEDIUM);
+                } catch (IOException e)
                 {
                     e.printStackTrace();
                 }
-                 // Снять такск из очереди
+                // Снять такск из очереди
                 if (bruteForcer.getHash().equals(hash))
                 {
                     bruteForcer = null;
@@ -405,7 +442,7 @@ public class BruteServer implements Runnable
                     taskMap.get(hash).setState("SUCCSEDED");
                     taskMap.get(hash).setResult(message);
                 }
-               
+
                 break;
             }
 
@@ -417,10 +454,11 @@ public class BruteServer implements Runnable
         String tmp = new String(bytes);
         String tasks = "";
 
-        Iterator<String> iter = hashQueue.iterator();
+        Iterator<Map.Entry<String,TaskContainer>> iter =  taskMap.entrySet().iterator();
         while (iter.hasNext())
         {
-            TaskContainer task = taskMap.get(iter.next());
+            Map.Entry<String,TaskContainer> entry = iter.next();
+            TaskContainer task = entry.getValue();
             tasks = tasks + "<div class=\"task_entry\"><ul><li><div class=\"status\">" + task.state + ":</div></li><li><div class=\"hash\">" + task.hash + "</div></li><li><div class=\"result\">" + task.result + "</div></li><li> <img src=\"img/close.png\" height=20px width=20px> </li></ul></div>";
         }
 
@@ -431,11 +469,14 @@ public class BruteServer implements Runnable
         return tmp.getBytes();
     }
 
-    private byte [] makeNewTask ()
-    {        
-        if (bruteForcer==null||!bruteForcer.hasNext())
+    private byte[] makeNewTask()
+    {
+        if (bruteForcer == null || !bruteForcer.hasNext())
         {
-            if (bruteForcer!=null) taskMap.get(bruteForcer.getHash()).setState("OVER");
+            if (bruteForcer != null)
+            {
+                taskMap.get(bruteForcer.getHash()).setState("OVER");
+            }
             if (!hashQueue.isEmpty())
             {
                 bruteForcer = new SHABruteForcer(hashQueue.removeFirst());
@@ -444,7 +485,7 @@ public class BruteServer implements Runnable
             }
             return null;
         }
-        SHAStep step = bruteForcer.next();        
-        return (bruteForcer.getHash()+step.toString()).getBytes();
+        SHAStep step = bruteForcer.next();
+        return (bruteForcer.getHash()+"\n" + step.toString()).getBytes();
     }
 }

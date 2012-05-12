@@ -22,7 +22,7 @@ public class SHABruteForcer extends SHABase implements Iterable<SHAStep>, Iterat
     public SHABruteForcer(String hash)
     {
         this.hash = hash;
-        lastTaskEnd = 0;
+        lastTaskEnd = -1;
         top = TOTAL;
         buildTime = System.currentTimeMillis();
     }

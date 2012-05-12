@@ -63,6 +63,6 @@ public class SHAStep extends SHABase implements Iterable<SHAStep>, Iterator<SHAS
     @Override
     public String toString ()
     {
-         return (Long.toString(current)+"\n"+Long.toString(end)+"\n");
+         return (Long.toString(current+1)+"\n"+Long.toString(end)+"\n");
     }
 }
