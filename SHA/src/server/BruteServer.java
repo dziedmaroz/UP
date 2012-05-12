@@ -133,10 +133,15 @@ public class BruteServer implements Runnable
             try
             {
                 logger.addRecord("Waiting for connection", LogLevel.MEDIUM);
-                if (selector.isOpen())
+                if (selector.isOpen() || !waiting.isEmpty())
                 {
                     selector.select();
                     Set<SelectionKey> keys = selector.selectedKeys();
+                    if(!waiting.isEmpty())
+                    {
+                        
+                        keys.addAll(waiting);
+                    }
                     for (SelectionKey key : keys)
                     {
                         if (!key.isValid())
