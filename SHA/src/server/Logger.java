@@ -5,6 +5,7 @@
 package server;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -37,9 +38,10 @@ class Logger
             cal.clear(Calendar.MINUTE);
             cal.clear(Calendar.SECOND);
             cal.clear(Calendar.MILLISECOND);
-            fout = new BufferedWriter(new FileWriter(logDir + "/" + cal.getTime().toString(), true));
+            String logfilename =  cal.getTime().toString();
+            logfilename=logfilename.replaceAll(":", "-");
+            fout = new BufferedWriter(new FileWriter(logDir + File.separator +logfilename, true));
             System.out.println("[" + new Date().toString() + "] " + record);
-
             fout.write("[" + new Date().toString() + "] " + record);
             fout.newLine();
             fout.close();

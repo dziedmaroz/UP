@@ -93,4 +93,19 @@ background:#eee;
 	width:auto;
 	float:left;
 }
-
+.error
+{
+	margin:auto;
+	width:400px;
+	height:400px;
+	background:#EDEAE3;
+	color:#34302D;
+	font-size:100pt;
+	text-align:center;	
+}
+.eMessage
+{
+	margin:auto;	 
+	color:#34302D;	 
+	text-align:center;	
+}

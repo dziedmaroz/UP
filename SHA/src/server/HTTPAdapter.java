@@ -31,6 +31,11 @@ class HTTPAdapter
         this.url = url;
     }
 
+    public HTTPAdapter ()
+    {
+        url=null;
+    }
+
     private String makeHeader(long contentLength, String mime, String responseState)
     {
         String header = "HTTP/1.1 " + responseState + "\n";
@@ -57,9 +62,9 @@ class HTTPAdapter
 
     }
 
-    public byte[] getResponse(byte[] content, String mime, String responseState)
+    public byte[] getResponse(byte[] content, String mime, String responseState) throws IOException
     {
-        if (content==null) return make404();
+        if (content==null) return  make404();
         String header = makeHeader( content.length, mime,  responseState);
         byte[] headerBytes = header.getBytes();
         int headerLen = header.length();
@@ -74,7 +79,7 @@ class HTTPAdapter
 
     public String getMime ()
     {
-        File file = new File(url);
+        File file = new File(url.equals("/")?"index.html":url);
         String mime = "text/plain";
         String ext = file.getName().substring(file.getName().lastIndexOf(".")==-1?0:file.getName().lastIndexOf("."));
         if(ext.equalsIgnoreCase(".html")) mime = "text/html";
@@ -89,7 +94,7 @@ class HTTPAdapter
         return mime;
 
     }
-    public byte[] getContent () throws IOException
+    public byte[] getContent (String url) throws IOException 
     {
         byte[] content = null;
         if (url.equals("/")) url ="index.html";
@@ -109,13 +114,14 @@ class HTTPAdapter
                 e.printStackTrace();
             }
 
-        }
+        }       
+
         return content;
     }
-    private byte [] make404 ()
+    private byte [] make404 () throws IOException
     {
-        String header = "HTTP/1.1 " + "404" + "\n";
-
+        String header = "HTTP/1.1 " + "404 Not Found" + "\n";
+        String content = new String(getContent("404.html"));
         // дата создания в GMT
         DateFormat df = DateFormat.getTimeInstance();
         df.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -125,14 +131,38 @@ class HTTPAdapter
 
 
         // длина файла
-        header = header + "Content-Length: " + "404".length() + "\n";
+        header = header + "Content-Length: " + content.length() + "\n";
 
         // строка с MIME кодировкой
-        header = header + "Content-Type: " + "text/plain" + "\n";
+        header = header + "Content-Type: " + "text/html" + "\n";
 
         // остальные заголовки
         header = header + "Connection: close\n" + "Server: BruteForcer\n\n";
-        header+="404";
+        header+=content;
+
+        return header.getBytes();
+    }
+    public byte [] badRequest () throws IOException
+    {
+        String header = "HTTP/1.1 " + "404 Bad Request" + "\n";
+        String content = new String(getContent("400.html"));
+        // дата создания в GMT
+        DateFormat df = DateFormat.getTimeInstance();
+        df.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+        // время последней модификации файла в GMT
+        header = header + "Last-Modified: " + df.format(new Date()) + "\n";
+
+
+        // длина файла
+        header = header + "Content-Length: " + content.length() + "\n";
+
+        // строка с MIME кодировкой
+        header = header + "Content-Type: " + "text/html" + "\n";
+
+        // остальные заголовки
+        header = header + "Connection: close\n" + "Server: BruteForcer\n\n";
+        header+=content;
 
         return header.getBytes();
     }
