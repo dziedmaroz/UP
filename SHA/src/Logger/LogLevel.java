@@ -3,15 +3,14 @@
  * and open the template in the editor.
  */
 
-package server;
+package Logger;
 
 /**
  *
  * @author lucian
  */
-enum LogLevel
+public enum LogLevel
 {
-
     LOW, MEDIUM, HIGH, TALKY
 };
 

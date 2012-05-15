@@ -1,4 +1,4 @@
-package server;
+package Brute.Server;
 
 
 import java.io.BufferedReader;

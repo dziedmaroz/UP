@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package server;
+package Logger;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,7 +16,7 @@ import java.util.Date;
  *
  * @author lucian
  */
-class Logger
+public class Logger
 {
 
     private String logDir;

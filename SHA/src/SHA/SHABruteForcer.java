@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package sha;
+package SHA;
 
 import java.util.Iterator;
 
@@ -15,7 +15,7 @@ public class SHABruteForcer extends SHABase implements Iterable<SHAStep>, Iterat
 
     protected String hash;
     protected long lastTaskEnd;
-    protected static final long PORTION = 10000;
+    protected static final long PORTION = 1000000;
     protected long top;
     protected long buildTime;
 

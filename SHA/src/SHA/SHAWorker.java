@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package sha;
+package SHA;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
