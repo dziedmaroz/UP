@@ -45,6 +45,7 @@ public class BruteServer extends BruteBase implements Runnable
     private LogLevel logLevel;
     private Logger logger;
 
+    // Контейнер для тасков. 
     class TaskContainer
     {
 
@@ -139,7 +140,7 @@ public class BruteServer extends BruteBase implements Runnable
             logLevel = LogLevel.TALKY;
         }
         logger = new Logger(logDir, logLevel);
-        logger.addRecord("\n\n\t\t\tStarting server...", logLevel);
+        logger.addRecord("\n\n\t\t\tStarting server...", logLevel.LOW);  
         serverChannel = ServerSocketChannel.open();
         serverChannel.configureBlocking(false);
         logger.addRecord("Binding port " + Integer.toString(port) + " on localhost...", LogLevel.LOW);
@@ -182,37 +183,6 @@ public class BruteServer extends BruteBase implements Runnable
                             connections.put(selectionKeyRead, byteBuffer);
                         } else if (key.isReadable())
                         {
-//                            // Если уже ожидает задания
-//                            if (waiting.contains(key))
-//                            {
-//                                waiting.remove(key);
-//
-//                                byte[] task = makeNewTask();
-//                                // И если задания есть
-//                                if (task != null)
-//                                {
-//                                    // Выдать таск
-//                                    ByteBuffer byteBuffer = connections.get(key);
-//                                    byteBuffer.clear();
-//                                    byteBuffer.position(0);
-//                                    try
-//                                    {
-//                                        logger.addRecord("Sending new task (" + new String(task) + ") to " + key.channel().toString(), logLevel.MEDIUM);
-//                                    } catch (IOException e)
-//                                    {
-//                                        e.printStackTrace();
-//                                    }
-//                                    byteBuffer.limit(task.length);
-//                                    byteBuffer.put(task);
-//                                    byteBuffer.flip();
-//                                    key.interestOps(SelectionKey.OP_WRITE);
-//                                } else
-//                                {
-//                                    // Ждем дальше
-//                                    waiting.add(key);
-//                                }
-//                                continue;
-//                            } else
                             {
                                 logger.addRecord("Reading from " + key.channel().toString() + "...", LogLevel.HIGH);
                                 SocketChannel socketChannel = (SocketChannel) key.channel();
@@ -236,7 +206,7 @@ public class BruteServer extends BruteBase implements Runnable
                                     byteBuffer.flip();
                                     byteBuffer.mark();
                                     // Разбираем содержимое буфера
-                                    Post post = decodeAndCheck(read, byteBuffer);
+                                    Post post = decodeAndCheck(byteBuffer);
                                     byteBuffer.reset();
                                     processPost(post, key);
                                 }
@@ -268,15 +238,22 @@ public class BruteServer extends BruteBase implements Runnable
         }
     }
 
-    private Post decodeAndCheck(int read, ByteBuffer byteBuffer)
+    /**
+     * Валидация и разбор запроса
+     * @param byteBuffer байт буфер
+     * @return объект класса Post 
+     */
+    private Post decodeAndCheck(ByteBuffer byteBuffer)
     {
         charBuffer.clear();
-
         decoder.decode(byteBuffer, charBuffer, false);
         charBuffer.flip();
         Status status = null;
         String message = null;
-
+        if (charBuffer.toString().length() < 3)
+        {
+            return null;
+        }
         try
         {
             logger.addRecord(charBuffer.toString(), logLevel.TALKY);
@@ -312,8 +289,14 @@ public class BruteServer extends BruteBase implements Runnable
         return null;
     }
 
+    /**
+     * Закрываем канал
+     * @param key по ключу
+     * @throws IOException
+     */
     private void closeChannel(SelectionKey key) throws IOException
     {
+        logger.addRecord("Closing "+key.channel()+" chanel", logLevel.LOW);
         httpConnections.remove(key);
         connections.remove(key);
         SocketChannel socketChannel = (SocketChannel) key.channel();
@@ -324,6 +307,10 @@ public class BruteServer extends BruteBase implements Runnable
         key.cancel();
     }
 
+    /**
+     * Выключить сервер
+     * @throws IOException
+     */
     public synchronized void shutdownServer() throws IOException
     {
         logger.addRecord("Shutting down...", LogLevel.LOW);
@@ -348,6 +335,9 @@ public class BruteServer extends BruteBase implements Runnable
             selector.close();
         }
     }
+    /*
+     * Обработать пост
+     */
 
     private void processPost(Post post, SelectionKey key)
     {
@@ -357,6 +347,7 @@ public class BruteServer extends BruteBase implements Runnable
         }
         switch (post.getStatus())
         {
+            // HTTP-запрос
             case HTTP:
             {
                 httpConnections.add(key);
@@ -369,12 +360,14 @@ public class BruteServer extends BruteBase implements Runnable
                 {
                     // получен POST запрос
                     String request = httpRequest.getContent();
-                    if (request.matches("Hash=[0-9a-f]{5,40}&addHashBtn=Add"))
+                    if (request.matches("Hash=[0-9a-f]{5,40}&addHashBtn=Add")) // если валидный хэш
                     {
                         String hash = request.substring("Hash=".length(), request.indexOf('&'));
-                        if (!taskMap.containsKey(hash))
+                        if (!taskMap.containsKey(hash)) // если такой хэш еще не перебирается
                         {
+                            // добавляем в очередь
                             hashQueue.addLast(hash);
+                            // добавляем в мэп тасков
                             taskMap.put(hash, new TaskContainer(hash, "N/A", "WAITING"));
                         } else
                         {
@@ -412,10 +405,9 @@ public class BruteServer extends BruteBase implements Runnable
                 byteBuffer.put(toWrite);
                 byteBuffer.flip();
                 key.interestOps(SelectionKey.OP_WRITE);
-
-                // Выдать статистику
                 break;
             }
+            // Нужно задание
             case NEED_TASK:
             {
                 // Выдать таск
@@ -426,9 +418,6 @@ public class BruteServer extends BruteBase implements Runnable
                 //Если заданий нет
                 if (task == null)
                 {
-                    // Ставим в очередь на ожидание заданий
-                    // waiting.add(key);
-
                     //Говорим ждать
                     task = CODE_WAIT.getBytes();
                 }
@@ -448,7 +437,7 @@ public class BruteServer extends BruteBase implements Runnable
 
                 break;
             }
-
+            // Хэш подобран
             case SUCCSESS:
             {
                 // Вывести результат
@@ -470,17 +459,22 @@ public class BruteServer extends BruteBase implements Runnable
                 }
                 if (taskMap.containsKey(hash))
                 {
+                    // пометить как успешно завершенный
                     taskMap.get(hash).setState("SUCCSEDED");
                     taskMap.get(hash).setResult(message);
                     taskMap.get(hash).setEndTime(System.currentTimeMillis());
                 }
-
                 break;
             }
 
         }
     }
 
+    /**
+     * Распарсить страничку статистики и заменить переменные значениями
+     * @param bytes
+     * @return
+     */
     private byte[] parseStat(byte[] bytes)
     {
         String tmp = new String(bytes);
@@ -502,22 +496,31 @@ public class BruteServer extends BruteBase implements Runnable
         tmp = tmp.replaceAll("#tasks", tasks);
         return tmp.getBytes();
     }
+    /*
+     * Сгенерировать новое задание
+     */
 
     private byte[] makeNewTask()
     {
+        // Если сейчас ничего не считается или отправлена последняя порция
         if (bruteForcer == null || !bruteForcer.hasNext())
         {
+            // Если отправлена последняя порция
             if (bruteForcer != null)
             {
+                // говорим что все таски считаются
                 taskMap.get(bruteForcer.getHash()).setState("OVER");
             }
+            // Если очередь хэшей не пуста
             if (!hashQueue.isEmpty())
             {
+                // Добавляем таск;
                 bruteForcer = new SHABruteForcer(hashQueue.removeFirst());
                 taskMap.get(bruteForcer.getHash()).setState("ACTIVE");
                 taskMap.get(bruteForcer.getHash()).setStartTime(System.currentTimeMillis());
-                return makeNewTask();
+                return makeNewTask(); // рекурсивный вызов, теперь пойдем по другой ветке
             }
+            // так уж получилось, что выдавать совершенно нечего
             return null;
         }
         SHAStep step = bruteForcer.next();
