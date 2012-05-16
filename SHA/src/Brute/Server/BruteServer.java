@@ -140,7 +140,7 @@ public class BruteServer extends BruteBase implements Runnable
             logLevel = LogLevel.TALKY;
         }
         logger = new Logger(logDir, logLevel);
-        logger.addRecord("\n\n\t\t\tStarting server...", logLevel.LOW);  
+        logger.addRecord("\n\n\t\t\tStarting server...", logLevel.LOW);
         serverChannel = ServerSocketChannel.open();
         serverChannel.configureBlocking(false);
         logger.addRecord("Binding port " + Integer.toString(port) + " on localhost...", LogLevel.LOW);
@@ -296,7 +296,7 @@ public class BruteServer extends BruteBase implements Runnable
      */
     private void closeChannel(SelectionKey key) throws IOException
     {
-        logger.addRecord("Closing "+key.channel()+" chanel", logLevel.LOW);
+        logger.addRecord("Closing " + key.channel() + " chanel", logLevel.LOW);
         httpConnections.remove(key);
         connections.remove(key);
         SocketChannel socketChannel = (SocketChannel) key.channel();
