@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="http://fpmi.bsu.by/lectures/java" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://fpmi.bsu.by/lectures/java library_strict.xsd">
+    <book id="1234" isbn-13="978-0130273635" category="Java">
+        <author>Bruce Eckel</author>
+        <title>Thinking in Java (2nd Edition)</title>
+        <publicationDate>2000-05-31</publicationDate>
+        <description>
+            Thinking in Java, Second Edition is the much-anticipated revision of Bruce Eckel's best-selling
+            Java introduction...
+        </description>
+    </book>
+    <book id="5678" isbn-13="978-0201485677" category="Refactoring">
+        <author>Martin Fowler</author>
+        <title>Refactoring: Improving the Design of Existing Code</title>
+        <publicationDate>1999-07-08</publicationDate>
+        <description>
+            Refactoring is about improving the design of existing code. It is the process of changing a software
+            system...
+        </description>
+    </book>
+</library>

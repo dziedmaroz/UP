@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<messages>
+    <message>
+        <to>Alice</to>
+        <from>Bob</from>
+        <heading>Greeting</heading>
+        <body type="text">
+            Hello, Alice!
+            <![CDATA[Русский текст и спецсимволы & < > " ']]>
+        </body>
+        <!-- This is XML comment -->
+        <misc>&amp; &lt; &gt; &quot;&apos;</misc>
+    </message>
+</messages>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+           targetNamespace="http://fpmi.bsu.by/lectures/java"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="library">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="book" maxOccurs="unbounded" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="author">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="title">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="publicationDate">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:date"/>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="description">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:minLength value="10"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute type="xs:string" name="id" use="required"/>
+                        <xs:attribute type="xs:string" name="isbn-13" use="required"/>
+                        <xs:attribute type="xs:string" name="category" use="optional"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

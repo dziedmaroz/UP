@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<log> 
+    <request> 
+        <site>test.com</site> 
+        <URI>/example/part2</URI> 
+        <request-start-timestamp>1234567000000</request-start-timestamp> 
+        <requset-end-timestamp>1234567002301</requset-end-timestamp> 
+        <response-size>12334</response-size> 
+    </request> 
+    <request> 
+        <site>example.com</site> 
+        <URI>/test/app</URI> 
+        <request-start-timestamp>1234567000001</request-start-timestamp> 
+        <requset-end-timestamp>1234567003301</requset-end-timestamp> 
+        <response-size>52334</response-size> 
+    </request> 
+ 
+</log> 

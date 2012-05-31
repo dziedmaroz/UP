@@ -20,6 +20,7 @@ public class LogRecord {
     private long startTimestamp;
     private long endTimestamp;
     private long responseSize;
+    
     /**
      * @param site
      * @param uRI
@@ -35,6 +36,8 @@ public class LogRecord {
 	this.startTimestamp = startTimestamp;
 	this.endTimestamp = endTimestamp;
 	this.responseSize = responseSize;
+	 
+	 
     }
     /**
      * @return the site

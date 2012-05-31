@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<recipe type="dessert">
+    <recipename cuisine="american" servings="1">Ice Cream Sundae</recipename>
+    <ingredlist>
+        <listitem>
+            <quantity units="cups">0.5</quantity>
+            <itemdescription>vanilla ice cream</itemdescription>
+        </listitem>
+        <listitem>
+            <quantity units="tablespoons">3</quantity>
+            <itemdescription>chocolate syrup or chocolate fudge</itemdescription>
+        </listitem>
+        <listitem>
+            <quantity units="tablespoons">1</quantity>
+            <itemdescription>nuts</itemdescription>
+        </listitem>
+        <listitem>
+            <quantity units="each">1</quantity>
+            <itemdescription>cherry</itemdescription>
+        </listitem>
+    </ingredlist>
+    <utensils>
+        <listitem>
+            <quantity units="each">1</quantity>
+            <utensilname>bowl</utensilname>
+        </listitem>
+        <listitem>
+            <quantity units="each">1</quantity>
+            <utensilname>spoons</utensilname>
+        </listitem>
+        <listitem>
+            <quantity units="each">1</quantity>
+            <utensilname>ice cream scoop</utensilname>
+        </listitem>
+    </utensils>
+    <directions>
+        <step>Using ice cream scoop, place vanilla ice cream into bowl.</step>
+        <step>Drizzle chocolate syrup or chocolate fudge over the ice cream.</step>
+        <step>Sprinkle nuts over the mound of chocolate and ice cream.</step>
+        <step>Place cherry on top of mound with stem pointing upward.</step>
+        <step>Serve.</step>
+    </directions>
+    <variations>
+        <option>Replace nuts with raisins.</option>
+        <option>Use chocolate ice cream instead of vanilla ice cream.</option>
+    </variations>
+    <preptime>5 minutes</preptime>
+</recipe>
