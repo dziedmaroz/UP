@@ -33,18 +33,12 @@ public class StaXParserTest {
 	    }
 	    XMLEventReader eventReader = inputFactory
 		    .createXMLEventReader(stream);
-	    while (eventReader.hasNext()) {
-		XMLEvent next = eventReader.peek();
-
-		if (next.isStartElement()) {
-		    readStartElement(eventReader);
-		} else {
-		    if (next.isCharacters()) {
-			System.out.println(readCharacters(eventReader));
-		    } else {
-			// Just skip other elements
-			eventReader.nextEvent();
-		    }
+	    while (eventReader.hasNext())
+	    {
+		XMLEvent tag = eventReader.nextTag();
+		if (tag.isStartElement() && tag.asStartElement().getName().getLocalPart().equalsIgnoreCase("request"))		    
+		{
+		    System.out.println("request");
 		}
 	    }
 	} catch (FileNotFoundException e) {
@@ -59,15 +53,7 @@ public class StaXParserTest {
 	StartElement startElement = event.asStartElement();
 
 	QName elementName = startElement.getName();
-	System.out.println("Tag: " + elementName.getLocalPart());
-
-	Iterator<Attribute> attributes = startElement.getAttributes();
-	while (attributes.hasNext()) {
-	    Attribute attribute = attributes.next();
-	    System.out.println("Attribute: " + attribute.getName() + " "
-		    + attribute.getValue());
-
-	}
+	System.out.println("Tag: " + elementName.getLocalPart());	
     }
 
     private static StringBuilder readCharacters(XMLEventReader eventReader)
