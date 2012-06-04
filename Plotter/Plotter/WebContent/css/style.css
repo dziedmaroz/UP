@@ -12,53 +12,45 @@
    TODO customize this sample style
    Syntax recommendation http://www.w3.org/TR/REC-CSS2/
 */
-
-body
-{
-    margin:0;
-    padding:0;
-
-    font-family: sans-serif;
-    background: #E9E9E9;
+body {
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+	background: #BCBCBC;
 }
 
-#content
-{
-    background: #E9E9E9;
-    color:#333333;
-    font-weight: bold;   
-    width: 80%;
-    margin:0 auto;
-}
-
-#promt
-{
-	margin: 0 auto;
+#content {
+	background: #BCBCBC;
+	color: #333333;
+	font-weight: bold;
 	width: 80%;
-	 
-}
-#header
-{
-    background: #FF9900;
-    color:#424242;
-    font-size: 4em;    
-    padding: 0.5em;
-    margin: 0 0 20px 0;
-    font-weight: bold;
+	margin: 0 auto;
 }
 
-#plot
-{
+#promt {
+	margin: 20px auto;
+	padding: 5px;
+	width: 100%;
+	background: #E9E9E9;
+	width: 100%;
+}
+
+#header {
+	background: #FF9900;
+	color: #424242;
+	font-size: 4em;
+	padding: 0.5em;
+	margin: 0 0 20px 0;
+	font-weight: bold;
+}
+
+#plot {
 	width: 600px;
-	margin: 0px auto;	
-	height: 400px;	
+	margin: 0px auto;
+	height: 400px;
 }
 
-#plotspace
-{
-	
-	margin: 20px auto;	
+#plotspace {
+	margin: 20px 40px;
+	background: #E9E9E9;
 }
-
- 
- 

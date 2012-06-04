@@ -4,28 +4,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="css/style.css" />
-
-<!--[if IE]>
-			<script type="text/javascript" src="js/flotr/lib/excanvas.js"></script>
-			<script type="text/javascript" src="js/flotr/lib/base64.js"></script>
-		<![endif]-->
-<script type="text/javascript" src="js/flotr/lib/canvas2image.js"></script>
-<script type="text/javascript" src="js/flotr/lib/canvastext.js"></script>
-<script type="text/javascript" src="js/flotr/lib/prototype-1.6.0.2.js"></script>
-<script type="text/javascript" src="js/flotr/flotr-0.2.0-alpha.js"></script>
-
-
-<title>Plotter</title>
+<title>Insert title here</title>
 </head>
 <body>
-
-<div id="header">Plotter|alpha</div>
-
-
-<div id="content">
-	<jsp:include page="plotspace.jsp"/>		 
-</div>
-	 
+	<jsp:forward page="/catch" />
 </body>
 </html>
