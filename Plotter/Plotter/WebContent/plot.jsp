@@ -34,13 +34,7 @@
 
 		<div id="plotspace">
 			<div id="plot">${err}</div>
-
-			<form name="image-download" action="" onsubmit="return false">
-				<button name="to-image"
-					onclick="f.saveImage('png', null, null, true)">To Image</button>
-				<button name="download" onclick="f.saveImage('png')">Download</button>
-				<button name="reset" onclick="f.restoreCanvas()">Reset</button>
-			</form>
+			<div id="download"></div>
 		</div>
 
 
@@ -51,9 +45,14 @@
 			var d1 = [${plot}];				
 			if (${allOk})
 			{	 
+				
 		    	f = Flotr.draw($('plot'), [ d1 ]);
+		    	f.saveImage('png',null,null,true);
+		    	document.getElementById('download').innerHTML = '<a href="'+f.canvas.toDataURL()+'"> get image </a>';
+		    	
 		    	if (Prototype.Browser.IE)
 		    	{
+		    		
 					var form = $(document.forms['image-download']);
 					form.disable().insert({top: "Your browser doesn't allow you to use this feature, sorry :(<br />"});
 				}

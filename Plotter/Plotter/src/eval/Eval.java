@@ -5,7 +5,7 @@ import expr.*;
 public class Eval {
     private String exp;
     private Expr expr;
-    private String err ="";
+    private String err = "";
     private boolean allOk = false;
     private final double UP_X = 10;
     private final double DOWN_X = -10;
@@ -21,16 +21,14 @@ public class Eval {
 	    allOk = true;
 	} catch (SyntaxException e) {
 	    allOk = false;
-	    err =e.explain();
+	    err = e.explain();
 	}
 	return allOk;
     }
 
     public String getTable() {
 	String res = "";
-	try {
-	    expr = Parser.parse(exp);
-	    allOk = true;
+	if (allOk) {
 	    Variable x = Variable.make("x");
 
 	    for (double xval = DOWN_X; xval <= UP_X; xval += STEP) {
@@ -40,16 +38,13 @@ public class Eval {
 		if (xval != UP_X)
 		    res += ", ";
 	    }
-	} catch (SyntaxException e) {
-	    allOk = false;
 	}
 
 	return res;
     }
 
     public String getErr() {
-        return err;
+	return err;
     }
-    
-    
+
 }
